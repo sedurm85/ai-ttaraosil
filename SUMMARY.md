@@ -45,3 +45,21 @@
   * [여행 가이드](chapters/08-daily-ai/02-travel.md)
   * [글쓰기 도우미](chapters/08-daily-ai/03-writing.md)
   * [매일 5분 AI 습관](chapters/08-daily-ai/04-daily-habit.md)
+
+## Part 5: AI 실전 가이드
+
+* [Ch.9 AI 도구 시작하기](chapters/09-getting-started/README.md)
+  * [ChatGPT 시작하기](chapters/09-getting-started/01-chatgpt.md)
+  * [Claude 시작하기](chapters/09-getting-started/02-claude.md)
+  * [Gemini 시작하기](chapters/09-getting-started/03-gemini.md)
+  * [스마트폰 vs 컴퓨터, 뭘로 할까?](chapters/09-getting-started/04-which-device.md)
+* [Ch.10 프롬프트 실전 연습](chapters/10-prompt-practice/README.md)
+  * [자기소개부터 시작해요](chapters/10-prompt-practice/01-self-intro.md)
+  * [5가지 실전 프롬프트 템플릿](chapters/10-prompt-practice/02-five-templates.md)
+  * [대화를 이어가는 기술](chapters/10-prompt-practice/03-keep-talking.md)
+  * [실패했을 때 대처법](chapters/10-prompt-practice/04-when-it-fails.md)
+* [Ch.11 AI로 만들어보기](chapters/11-create-with-ai/README.md)
+  * [AI로 이미지 만들기](chapters/11-create-with-ai/01-images.md)
+  * [AI로 글 다듬기](chapters/11-create-with-ai/02-writing.md)
+  * [AI로 표/정리하기](chapters/11-create-with-ai/03-organize.md)
+  * [나만의 AI 활용법 찾기](chapters/11-create-with-ai/04-find-your-way.md)

@@ -3,7 +3,7 @@
   "description": "비개발자를 위한 가장 쉬운 AI 가이드북",
   "author": "AI따라오실",
   "language": "ko",
-  "plugins": ["hints"],
+  "plugins": [],
   "structure": {
     "summary": "SUMMARY.md"
   }

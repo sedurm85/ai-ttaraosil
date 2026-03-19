@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /Users/lhj1010/Desktop -name *.pdf -maxdepth 2)",
+      "Bash(find /Users/lhj1010 -name *.pdf -maxdepth 4)",
+      "Bash(brew install:*)",
+      "Bash(pdftotext /Users/lhj1010/Downloads/강의세션0.pdf -)",
+      "Bash(python3 -c \"import PyPDF2; print\\(''PyPDF2 available''\\)\")",
+      "Bash(python3 -c \"import pdfplumber; print\\(''pdfplumber available''\\)\")",
+      "Bash(pdfinfo \"/Users/lhj1010/Downloads/강의세션1.pdf\")",
+      "Bash(pdfinfo \"/Users/lhj1010/Downloads/강의세션1-1.pdf\")",
+      "Bash(pdfinfo \"/Users/lhj1010/Downloads/강의세션2.pdf\")",
+      "Bash(pdfinfo \"/Users/lhj1010/Downloads/강의세션3.pdf\")",
+      "Bash(pdfinfo \"/Users/lhj1010/Downloads/강의세션4.pdf\")",
+      "Bash(pdfinfo \"/Users/lhj1010/Downloads/강의세션5.pdf\")",
+      "Bash(pdftoppm -png -r 150 \"/Users/lhj1010/Downloads/강의세션1.pdf\" /tmp/lecture-pdf/s1)",
+      "Bash(pdftoppm -png -r 150 \"/Users/lhj1010/Downloads/강의세션1-1.pdf\" /tmp/lecture-pdf/s1x)",
+      "Bash(pdftoppm -png -r 150 \"/Users/lhj1010/Downloads/강의세션2.pdf\" /tmp/lecture-pdf/s2)",
+      "Bash(pdftoppm -png -r 150 \"/Users/lhj1010/Downloads/강의세션3.pdf\" /tmp/lecture-pdf/s3)",
+      "Bash(pdftoppm -png -r 150 \"/Users/lhj1010/Downloads/강의세션4.pdf\" /tmp/lecture-pdf/s4)",
+      "Bash(ls /tmp/lecture-pdf/s1-*.png /tmp/lecture-pdf/s1x-*.png /tmp/lecture-pdf/s2-*.png /tmp/lecture-pdf/s3-*.png /tmp/lecture-pdf/s4-*.png /tmp/lecture-pdf/s5-*.png)"
+    ]
+  }
+}

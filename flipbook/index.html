@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI따라오실 — 누구나 시작하는 AI 첫걸음</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+    min-height: 100vh;
+    font-family: 'Noto Sans KR', sans-serif;
+    overflow: hidden;
+    color: #333;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Top Bar */
+  .top-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    z-index: 100;
+    color: #fff;
+  }
+  .top-bar .title {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .top-bar .page-info {
+    font-size: 13px;
+    opacity: 0.8;
+    white-space: nowrap;
+  }
+
+  /* Book Container */
+  .book-container {
+    position: fixed;
+    top: 50px; bottom: 40px; left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1800px;
+  }
+
+  .book {
+    position: relative;
+    width: 900px;
+    height: calc(100vh - 140px);
+    max-height: 640px;
+    display: flex;
+    transform-style: preserve-3d;
+  }
+
+  /* Pages */
+  .page-wrapper {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: none;
+  }
+  .page-wrapper.left-page { left: 0; transform-origin: right center; }
+  .page-wrapper.right-page { left: 50%; transform-origin: left center; }
+
+  .page-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .page-face.front { z-index: 1; }
+  .page-face.back { transform: rotateY(180deg); }
+
+  .page-content {
+    width: 100%;
+    height: 100%;
+    background: #faf8f0;
+    padding: 36px 32px 48px 32px;
+    overflow-y: auto;
+    font-family: 'Noto Serif KR', serif;
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: #2c2c2c;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #faf8f0;
+  }
+  .page-content::-webkit-scrollbar { width: 4px; }
+  .page-content::-webkit-scrollbar-track { background: #faf8f0; }
+  .page-content::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+
+  .page-content h1 {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 22px;
+    color: #4A6CF7;
+    margin-bottom: 16px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .page-content h2 {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 17px;
+    color: #3a3a5c;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .page-content h3 {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px;
+    color: #4A6CF7;
+    margin-top: 16px;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .page-content p {
+    margin-bottom: 12px;
+  }
+  .page-content ul, .page-content ol {
+    margin: 10px 0 14px 20px;
+  }
+  .page-content li {
+    margin-bottom: 6px;
+  }
+  .page-content strong {
+    color: #2a2a4a;
+    font-weight: 700;
+  }
+  .page-content em {
+    font-style: italic;
+    color: #555;
+  }
+  .page-content blockquote {
+    border-left: 3px solid #4A6CF7;
+    padding: 10px 16px;
+    margin: 12px 0;
+    background: rgba(74,108,247,0.05);
+    border-radius: 0 4px 4px 0;
+    font-size: 14px;
+    color: #444;
+  }
+  .page-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 13px;
+  }
+  .page-content th {
+    background: #4A6CF7;
+    color: #fff;
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12.5px;
+  }
+  .page-content td {
+    padding: 7px 10px;
+    border-bottom: 1px solid #e0ddd5;
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+  .page-content tr:nth-child(even) td { background: rgba(74,108,247,0.03); }
+  .page-content hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
+  }
+
+  .page-number {
+    position: absolute;
+    bottom: 14px;
+    font-size: 11px;
+    color: #999;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .page-number.left { left: 32px; }
+  .page-number.right { right: 32px; }
+
+  /* Cover page special styling */
+  .cover-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #fff;
+    padding: 40px 30px;
+  }
+  .cover-page h1 {
+    font-size: 28px;
+    color: #fff;
+    margin-bottom: 12px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .cover-page .subtitle {
+    font-size: 16px;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 30px;
+    font-style: italic;
+  }
+  .cover-page .desc {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.8;
+    max-width: 340px;
+  }
+  .cover-page .ornament {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #4A6CF7, transparent);
+    margin: 24px 0;
+  }
+
+  /* Spine shadow */
+  .spine-shadow {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    background: linear-gradient(90deg,
+      rgba(0,0,0,0.12) 0%,
+      rgba(0,0,0,0.25) 35%,
+      rgba(0,0,0,0.35) 50%,
+      rgba(0,0,0,0.25) 65%,
+      rgba(0,0,0,0.12) 100%
+    );
+    z-index: 50;
+    pointer-events: none;
+  }
+
+  /* Book shadow */
+  .book-shadow {
+    position: absolute;
+    bottom: -15px;
+    left: 5%; right: 5%;
+    height: 20px;
+    background: radial-gradient(ellipse, rgba(0,0,0,0.35) 0%, transparent 70%);
+    z-index: -1;
+  }
+
+  /* Navigation arrows */
+  .nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s, background 0.2s;
+    z-index: 60;
+  }
+  .book-container:hover .nav-arrow { opacity: 1; }
+  .nav-arrow:hover { background: rgba(255,255,255,0.2); }
+  .nav-arrow.disabled { opacity: 0.2 !important; cursor: default; }
+  .nav-prev { left: 10px; }
+  .nav-next { right: 10px; }
+
+  /* Click zones */
+  .click-zone {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 50%;
+    cursor: pointer;
+    z-index: 40;
+  }
+  .click-zone.left { left: 0; }
+  .click-zone.right { right: 0; }
+
+  /* Progress bar */
+  .progress-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    z-index: 100;
+    gap: 12px;
+  }
+  .progress-track {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #4A6CF7;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+  .progress-text {
+    color: rgba(255,255,255,0.7);
+    font-size: 12px;
+    white-space: nowrap;
+    min-width: 40px;
+    text-align: right;
+  }
+
+  /* Flip animation shadow */
+  .flip-shadow {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 100%;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Mobile styles */
+  @media (max-width: 768px) {
+    .book {
+      width: 94vw;
+      max-height: none;
+      height: calc(100vh - 120px);
+    }
+    .book.single-page-mode .page-wrapper {
+      width: 100%;
+      left: 0;
+    }
+    .spine-shadow { display: none; }
+    .page-content { padding: 24px 20px 44px 20px; font-size: 14px; }
+    .page-content h1 { font-size: 20px; }
+    .page-content h2 { font-size: 16px; }
+    .top-bar .title { font-size: 13px; }
+    .nav-arrow { opacity: 0.7; width: 36px; height: 36px; font-size: 16px; }
+    .cover-page h1 { font-size: 22px; }
+    .cover-page .subtitle { font-size: 14px; }
+  }
+
+  /* Animating page */
+  .page-wrapper.flipping {
+    z-index: 55 !important;
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="title">AI따라오실 — 누구나 시작하는 AI 첫걸음</div>
+  <div class="page-info" id="pageInfo">1 / 1</div>
+</div>
+
+<div class="book-container" id="bookContainer">
+  <div class="nav-arrow nav-prev" id="btnPrev" onclick="prevPage()">&#9664;</div>
+  <div class="book" id="book">
+    <div class="click-zone left" onclick="prevPage()"></div>
+    <div class="click-zone right" onclick="nextPage()"></div>
+    <div class="spine-shadow" id="spineShadow"></div>
+    <div class="book-shadow"></div>
+  </div>
+  <div class="nav-arrow nav-next" id="btnNext" onclick="nextPage()">&#9654;</div>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-track" id="progressTrack" onclick="onProgressClick(event)">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-text" id="progressText">0%</div>
+</div>
+
+<script>
+// ========== PAGE DATA ==========
+const pages = [
+  // Page 0: Cover
+  {
+    title: "표지",
+    content: `<div class="cover-page">
+      <h1>AI따라오실</h1>
+      <div class="subtitle">누구나 시작하는 AI 첫걸음</div>
+      <div class="ornament"></div>
+      <div class="desc">단순한 강의를 넘어, 우리가 만드는 성장의 문화<br><br>이 책은 당근마켓 "AI따라오실" 모임의 강의 자료를 정리한 가이드북이에요.<br><br>AI가 뭔지 몰라도 괜찮아요.<br>컴퓨터를 잘 못해도 괜찮아요.<br>이 책은 <strong style="color:#4A6CF7">아무것도 모르는 상태에서 시작하는 분</strong>을 위해 만들었어요.</div>
+    </div>`,
+    isCover: true
+  },
+  // Page 1: Cover - TOC
+  {
+    title: "목차",
+    content: `<h1>이 책에서 다루는 내용</h1>
+    <table>
+      <tr><th>Part</th><th>내용</th><th>한줄 요약</th></tr>
+      <tr><td><strong>Part 1</strong></td><td>AI와 첫 만남</td><td>AI가 뭔지, 왜 지금 중요한지</td></tr>
+      <tr><td><strong>Part 2</strong></td><td>AI의 성장 이야기</td><td>AI가 어떻게 똑똑해졌는지</td></tr>
+      <tr><td><strong>Part 3</strong></td><td>AI 에이전트 시대</td><td>스스로 일하는 AI의 등장</td></tr>
+      <tr><td><strong>Part 4</strong></td><td>직접 해봐요</td><td>AI에게 말 거는 법, 일상 활용</td></tr>
+    </table>
+    <h2>이런 분께 추천해요</h2>
+    <ul>
+      <li>AI가 뭔지 궁금하지만 어디서 시작할지 모르겠는 분</li>
+      <li>"AI 시대"라는 말에 막연한 두려움이 있는 분</li>
+      <li>AI로 일상을 조금 더 편하게 만들고 싶은 분</li>
+      <li>영상, 글쓰기, 여행 계획 등에 AI를 활용하고 싶은 분</li>
+    </ul>
+    <h2>AI따라오실의 약속</h2>
+    <ul>
+      <li><strong>Respect</strong> — 정시 참석으로 서로를 존중해요</li>
+      <li><strong>Share</strong> — 정성 어린 후기로 다음 강의의 원동력을 만들어요</li>
+      <li><strong>Do</strong> — 눈으로만 보지 않고, 손으로 직접 실행하며 배워요</li>
+    </ul>
+    <hr>
+    <p><em>함께 성장하는 우리 동네 AI 공부방, AI따라오실에서 만나요!</em></p>`
+  },
+  // Ch01 README
+  {
+    title: "환영합니다",
+    content: `<h1>Part 1. 환영합니다</h1>
+    <p>이 장은 "AI따라오실" 커뮤니티에 처음 오신 분들을 위한 안내서예요. AI를 배우기 전에, 먼저 우리가 어떤 곳에서 어떤 마음으로 함께하는지 알아볼게요. 그리고 왜 하필 '지금' AI를 배워야 하는지, 그 이유도 함께 살펴봐요.</p>
+    <p>걱정하지 마세요. 어려운 기술 이야기는 아직 안 해요. 편하게 읽어주세요.</p>
+    <h2>학습 목표</h2>
+    <ul>
+      <li>"AI따라오실" 커뮤니티가 어떤 곳인지 이해해요</li>
+      <li>우리가 함께 지키는 약속과 문화를 알아봐요</li>
+      <li>AI가 왜 지금 중요한 변화인지 느껴봐요</li>
+    </ul>
+    <table>
+      <tr><th>순서</th><th>제목</th><th>내용</th></tr>
+      <tr><td>01</td><td>AI따라오실을 소개합니다</td><td>커뮤니티 소개와 함께 지키는 3가지 약속</td></tr>
+      <tr><td>02</td><td>AI, 왜 지금인가요?</td><td>지금이 AI를 시작하기 가장 좋은 시점인 이유</td></tr>
+    </table>`
+  },
+  // 01-about-community (1)
+  {
+    title: "AI따라오실을 소개합니다",
+    content: `<h1>AI따라오실을 소개합니다</h1>
+    <h2>어떻게 시작된 모임인가요?</h2>
+    <p>"AI따라오실"은 당근 동네모임에서 시작된 AI 학습 커뮤니티예요. 이름이 재미있죠? "AI, 따라오실 분?" 하고 손을 내미는 느낌이에요.</p>
+    <p>이 모임은 두 가지 마음이 만나서 탄생했어요. 하나는 강사의 <strong>재능기부</strong>이고, 다른 하나는 참여자 여러분의 <strong>배우고 싶은 열정</strong>이에요.</p>
+    <p>세상에 AI 강의는 많아요. 유튜브에도 넘치고, 학원도 있고, 온라인 강좌도 가득하죠. 그런데 이 모임이 특별한 건, 단순히 "강사가 가르치고 학생이 듣는" 관계가 아니라는 거예요. 여기서는 모두가 함께 성장해요.</p>`
+  },
+  // 01-about-community (2)
+  {
+    title: "AI따라오실을 소개합니다",
+    content: `<h1>우리의 3가지 약속</h1>
+    <p>이 커뮤니티가 잘 돌아가려면, 서로를 위한 작은 약속이 필요해요. 딱 세 가지만 기억해주세요.</p>
+    <h3>Respect — 서로의 시간을 존중해요</h3>
+    <p>강사는 자신의 시간과 지식을 나누고, 여러분은 소중한 시간을 내서 참여해요. 그래서 <strong>시간 약속을 지키는 것</strong>이 가장 기본적인 존중이에요.</p>
+    <h3>Contribution — 후기를 남겨주세요</h3>
+    <p>수업을 듣고 나면 간단한 후기를 남겨주세요. 여러분의 후기는 다음 수업을 더 좋게 만드는 소중한 재료가 돼요.</p>
+    <h3>Do — 직접 해봐요</h3>
+    <p>듣기만 하면 금방 잊어버려요. 수업에서 배운 건 반드시 <strong>직접 따라 해보세요</strong>. 자전거 타기를 영상으로만 봐서는 절대 탈 수 없는 것처럼, AI도 직접 써봐야 내 것이 돼요.</p>`
+  },
+  // 01-about-community (3)
+  {
+    title: "AI따라오실을 소개합니다",
+    content: `<h1>단순한 무료 강의실이 아니에요</h1>
+    <p>세상에 공짜 강의는 많지만, 여기는 조금 달라요. 이 모임의 진짜 가치는 <strong>함께 성장하는 문화</strong>에 있어요.</p>
+    <p>혼자 유튜브를 보다가 막히면 포기하기 쉽죠. 하지만 옆에 같은 고민을 하는 동료가 있으면 이야기가 달라져요.</p>
+    <p>"나만 못하는 게 아니구나", "저분도 처음엔 어려워하셨구나" — 이런 경험이 쌓이면서, 어느새 AI가 두렵지 않은 내가 되어 있을 거예요.</p>
+    <blockquote>여러분은 이미 가장 중요한 첫걸음을 내디뎠어요. 이 글을 읽고 있다는 것 자체가 그 증거예요.</blockquote>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>"AI따라오실"은 강사의 재능기부와 참여자의 열정이 만나는 <strong>함께 성장하는 커뮤니티</strong>예요</li>
+      <li>3가지 약속: 시간 존중(Respect), 후기 남기기(Contribution), 직접 실습(Do)</li>
+      <li>혼자가 아니라 함께이기에 더 멀리 갈 수 있어요</li>
+    </ul>`
+  },
+  // 02-why-now (1)
+  {
+    title: "AI, 왜 지금인가요?",
+    content: `<h1>AI, 왜 지금인가요?</h1>
+    <h2>스마트폰을 처음 만났을 때를 기억하세요?</h2>
+    <p>스마트폰이 처음 세상에 나왔을 때를 떠올려볼게요. "그 작은 화면으로 뭘 한다고?", "버튼도 없는 전화기를 어떻게 써?" 하시던 분들이 많았죠. 그런데 지금은 어떤가요? 스마트폰 없이는 하루도 살기 어려워졌어요.</p>
+    <p><strong>AI가 지금 딱 그 시점에 와 있어요.</strong> 스마트폰이 처음 나왔을 때처럼, 지금 AI도 "이게 뭐지?" 하는 단계에서 "이거 없으면 불편해" 하는 단계로 넘어가고 있어요.</p>
+    <h2>IT 전문가도 놀란 변화</h2>
+    <p>불과 몇 년 전까지만 해도 컴퓨터에게 일을 시키려면 <strong>프로그래밍 언어</strong>라는 걸 알아야 했어요. 그런데 지금은요? 그냥 <strong>말로 하면 돼요</strong>.</p>
+    <p>비행기 조종석이 자동차 핸들로 바뀐 거예요. 이제는 한국어만 할 줄 알면 AI를 쓸 수 있어요.</p>`
+  },
+  // 02-why-now (2)
+  {
+    title: "AI, 왜 지금인가요?",
+    content: `<h1>파도를 먼저 타는 사람</h1>
+    <p>바다에서 서핑을 해본 적 없어도, 파도라는 건 아실 거예요. 파도는 기다려주지 않아요. 파도가 올 때 올라타면 신나게 달릴 수 있지만, 지나간 뒤에 뛰어들면 이미 늦어요.</p>
+    <p>AI라는 거대한 변화의 파도가 지금 밀려오고 있어요. 이 파도를 먼저 타는 사람은 더 편리하고, 더 여유 있고, 더 많은 기회를 누리게 돼요.</p>
+    <blockquote>늦었다고 생각하실 수도 있지만, 사실 <strong>지금이 가장 빠른 때</strong>예요. 내일보다 오늘이 더 빠르니까요.</blockquote>
+    <p>여러분은 이미 파도 위에 올라타고 있어요. 이 글을 읽고 있다는 건, 변화를 받아들일 준비가 되었다는 뜻이에요.</p>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>AI는 10년 전 스마트폰과 같은 전환점에 있어요 — 지금 배우면 앞으로의 생활이 훨씬 편해져요</li>
+      <li>예전에는 프로그래밍을 알아야 했지만, 이제는 <strong>말로 하면 되는 시대</strong>가 왔어요</li>
+      <li>변화의 파도는 기다려주지 않아요 — 지금 시작하는 것이 가장 빠른 시작이에요</li>
+    </ul>`
+  },
+  // Ch02 README
+  {
+    title: "AI는 무엇인가요?",
+    content: `<h1>Part 2. AI는 무엇인가요?</h1>
+    <p>이 장에서는 AI가 정확히 무엇인지, 우리 생활에서 어떻게 쓸 수 있는지, 그리고 많은 분들이 걱정하시는 일자리 문제까지 함께 이야기해 볼게요.</p>
+    <p>이 장을 다 읽고 나면, "아, AI가 그런 거였구나" 하고 고개를 끄덕이게 되실 거예요.</p>
+    <h2>학습 목표</h2>
+    <ul>
+      <li>AI가 무엇인지 두려움 없이 이해해요</li>
+      <li>AI가 실제로 우리 생활에서 할 수 있는 일들을 알아봐요</li>
+      <li>AI와 일자리에 대한 걱정을 현실적으로 바라봐요</li>
+    </ul>
+    <table>
+      <tr><th>순서</th><th>제목</th><th>내용</th></tr>
+      <tr><td>01</td><td>AI는 똑똑한 비서예요</td><td>AI를 쉽게 이해하는 비유와 개념</td></tr>
+      <tr><td>02</td><td>AI가 할 수 있는 것들</td><td>일상에서 바로 써먹을 수 있는 AI 활용 사례</td></tr>
+      <tr><td>03</td><td>혹시 내 일자리를 뺏는 건 아닐까?</td><td>AI와 일자리에 대한 솔직한 이야기</td></tr>
+    </table>`
+  },
+  // 01-ai-as-secretary (1)
+  {
+    title: "AI는 똑똑한 비서예요",
+    content: `<h1>AI는 똑똑한 비서예요</h1>
+    <h2>AI는 전공자만의 것이 아니에요</h2>
+    <p>"AI요? 그거 컴퓨터 전공한 사람들이나 쓰는 거 아니에요?" — 이렇게 생각하시는 분이 많아요. 뉴스에서 AI 이야기가 나올 때마다 어려운 용어가 쏟아지니까요. 인공지능, 머신러닝, 딥러닝, 신경망... 듣기만 해도 머리가 아프죠.</p>
+    <p>하지만 걱정 마세요. AI를 쓰기 위해 그런 걸 알 필요는 전혀 없어요. 우리가 TV를 볼 때 전자회로를 이해할 필요가 없는 것처럼요.</p>
+    <blockquote><strong>AI는 우리 생활의 귀찮은 일을 대신 처리해주는 '똑똑한 비서'</strong>라고 생각하면 돼요.</blockquote>`
+  },
+  // 01-ai-as-secretary (2)
+  {
+    title: "AI는 똑똑한 비서예요",
+    content: `<h1>로봇청소기를 떠올려 보세요</h1>
+    <p>집에 로봇청소기가 있으신 분 계세요? 로봇청소기가 하는 일은 간단해요. 우리 대신 바닥을 청소해주는 거예요.</p>
+    <p>AI도 이것과 비슷해요. 다만 청소 대신, <strong>생활 속의 번거로운 일들을 대신 해줘요</strong>. 복잡한 서류를 정리해주고, 긴 글을 요약해주고, 외국어를 번역해주고, 궁금한 걸 찾아서 알려줘요.</p>
+    <h2>검색은 도서관, AI는 전문 상담사</h2>
+    <p>검색은 마치 <strong>거대한 도서관에 가서 직접 책을 찾는 것</strong>과 같아요. 그런데 오늘의 AI는 <strong>도서관의 모든 책을 이미 다 읽은 전문가가 옆에 앉아서 설명해주는 것</strong>과 같아요.</p>
+    <h2>무서운 로봇이 아니에요</h2>
+    <p>현실의 AI는 <strong>월급을 아무리 많이 줘도 아깝지 않은 비서</strong>에 가까워요. AI가 우리를 <strong>지배하려는 존재가 아니라 도와주려는 존재</strong>라는 거예요.</p>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>AI는 누구나 쓸 수 있는 <strong>생활 속 똑똑한 비서</strong>예요</li>
+      <li>로봇청소기가 청소를 대신하듯, AI는 번거로운 일을 대신 처리해줘요</li>
+      <li>AI는 영화 속 로봇이 아니라 <strong>든든한 도우미</strong>예요</li>
+    </ul>`
+  },
+  // 02-what-ai-can-do (1)
+  {
+    title: "AI가 할 수 있는 것들",
+    content: `<h1>AI가 할 수 있는 것들</h1>
+    <h2>상상을 현실로 바꿔주는 마법 지팡이</h2>
+    <p>AI가 똑똑한 비서라는 건 알겠는데, 구체적으로 뭘 해줄 수 있는 걸까요? 마치 마법 지팡이처럼, "이런 것도 돼?" 하는 것들이 가능해요.</p>
+    <h3>복잡한 표 작업 정리</h3>
+    <p>"이 데이터를 월별로 정리하고 합계를 내줘"라고 말하면, 순식간에 깔끔하게 정리해줘요.</p>
+    <h3>아이 숙제 도와주기</h3>
+    <p>"초등학교 4학년 수준으로 광합성을 설명해줘"라고 하면, 아이가 이해할 수 있는 말로 쉽게 풀어서 알려줘요.</p>
+    <h3>보험 약관 읽고 요약하기</h3>
+    <p>AI에게 약관 내용을 보여주고 "핵심만 쉽게 알려줘"라고 하면, 우리가 이해할 수 있는 말로 정리해줘요.</p>`
+  },
+  // 02-what-ai-can-do (2)
+  {
+    title: "AI가 할 수 있는 것들",
+    content: `<h1>일상 속 AI 활용 사례</h1>
+    <h3>맛있는 레시피 찾기</h3>
+    <p>냉장고에 남은 재료가 달걀, 양파, 감자밖에 없어요. AI에게 물어보면, 여러 가지 요리를 추천해주고, 만드는 순서까지 친절하게 알려줘요.</p>
+    <h3>여행 계획 세우기</h3>
+    <p>"제주도 2박 3일 여행인데, 60대 부부가 좋아할 만한 코스 짜줘"라고 하면, 숙소, 맛집, 관광지까지 포함된 일정을 만들어줘요.</p>
+    <h3>아이 체험학습 보고서 작성</h3>
+    <p>"박물관 체험학습 보고서 양식 만들어줘"라고 하면, 기본 틀을 잡아줘요.</p>
+    <h3>음악 만들기, 그림 그리기</h3>
+    <p>AI는 <strong>창작</strong>까지 도와줘요. 악기를 다룰 줄 몰라도, 그림을 배운 적이 없어도 괜찮아요.</p>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>AI는 엑셀 정리, 보험 약관 요약, 여행 계획 등 <strong>일상의 번거로운 일들</strong>을 척척 해줘요</li>
+      <li>음악, 그림 같은 <strong>창작 활동</strong>까지 도와주는 마법 지팡이 같은 도구예요</li>
+      <li>지금 소개한 건 시작일 뿐 — 앞으로 직접 하나씩 해볼 거예요</li>
+    </ul>`
+  },
+  // 03-ai-and-jobs (1)
+  {
+    title: "혹시 내 일자리를 뺏는 건 아닐까?",
+    content: `<h1>혹시 내 일자리를 뺏는 건 아닐까?</h1>
+    <h2>누구나 한 번쯤 하는 걱정</h2>
+    <p>"AI가 이렇게 똑똑하면, 내 일자리는 괜찮을까?" 이런 걱정은 자연스러운 거예요. 하지만 비슷한 걱정을 우리가 전에도 했던 적이 있어요.</p>
+    <h2>세탁기가 빨래하는 사람을 없앴을까요?</h2>
+    <p>옛날에는 빨래를 하려면 냇가에 가서 빨래판에 문질문질 해야 했어요. 그런데 세탁기가 나왔어요.</p>
+    <p><strong>세탁기가 없앤 건 '사람'이 아니라 '고된 노동'이에요.</strong> 세탁기 덕분에 우리는 그 시간에 다른 의미 있는 일을 할 수 있게 되었어요.</p>
+    <p>AI도 마찬가지예요. AI가 없애는 건 '사람'이 아니라 <strong>'반복적이고 지루한 작업'</strong>이에요.</p>`
+  },
+  // 03-ai-and-jobs (2)
+  {
+    title: "혹시 내 일자리를 뺏는 건 아닐까?",
+    content: `<h1>AI는 적이 아니라 "증폭기"예요</h1>
+    <p>AI를 가장 정확하게 표현하는 말이 있어요. 바로 <strong>"증폭기"</strong>예요. 마이크처럼, 우리의 목소리를 더 크고 또렷하게 만들어주는 거예요.</p>
+    <p>글을 잘 쓰는 사람이 AI를 쓰면? 더 빨리, 더 다양한 글을 쓸 수 있어요. 요리를 좋아하는 사람이 AI를 쓰면? 새로운 레시피를 끊임없이 발견할 수 있어요.</p>
+    <h2>AI를 배우면 기회가 넓어져요</h2>
+    <p><strong>AI 자체가 일자리를 뺏는 게 아니라, AI를 잘 활용하는 사람이 더 많은 기회를 얻게 된다</strong>는 거예요.</p>
+    <blockquote>걱정을 완전히 내려놓으라는 말은 아니에요. 다만 그 걱정을 <strong>배우는 에너지로 바꿔보자</strong>는 거예요.</blockquote>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>세탁기가 '고된 노동'을 없앤 것처럼, AI도 반복적인 작업을 대신해줘요</li>
+      <li>AI는 우리의 능력을 더 크게 키워주는 <strong>증폭기</strong> 같은 도구예요</li>
+      <li>AI를 <strong>이해하고 활용하는 사람</strong>이 더 많은 기회를 얻게 돼요</li>
+    </ul>`
+  },
+  // Ch03 README
+  {
+    title: "말동무에서 동료로",
+    content: `<h1>Part 3. 말동무에서 동료로</h1>
+    <p>AI도 아이처럼 자라요. 처음에는 말도 제대로 못 하던 아기였지만, 지금은 혼자서 마트도 다녀오는 어른이 됐어요.</p>
+    <p>이 장에서는 AI가 어떻게 네 단계를 거쳐 성장해왔는지를 살펴볼 거예요.</p>
+    <h2>이 장에서 배우는 것</h2>
+    <ul>
+      <li><strong>1세대</strong>: 글자로만 대화하던 시절 — AI가 갓 태어난 아기였을 때</li>
+      <li><strong>2세대</strong>: 사진과 음성을 이해하기 시작한 시절 — 눈과 귀가 생긴 아이</li>
+      <li><strong>3세대</strong>: 인터넷을 검색하고 문서를 읽는 시절 — 도구를 쓰는 학생</li>
+      <li><strong>4세대</strong>: 목표만 주면 알아서 해내는 지금 — 스스로 일하는 어른</li>
+    </ul>
+    <h2>왜 이걸 알아야 할까요?</h2>
+    <p>AI의 성장 과정을 알면, 지금 AI가 무엇을 할 수 있고 무엇을 못 하는지 자연스럽게 이해하게 돼요. 자, 그럼 AI의 성장 앨범을 함께 넘겨볼까요?</p>`
+  },
+  // 01-gen1-text (1)
+  {
+    title: "1세대: 말을 배운 아기",
+    content: `<h1>1세대: 말을 배운 아기</h1>
+    <h2>갓 태어난 아기, AI</h2>
+    <p>갓 태어난 아기를 떠올려 보세요. 부모는 "지금 왜 우는 거지?" 하며 아기의 마음을 읽어내려고 온갖 노력을 해요.</p>
+    <p>초기의 AI가 딱 이랬어요. AI에게 뭔가를 시키려면, 정확한 글자로 된 명령을 입력해야 했어요. <strong>'글자를 넣으면 글자가 나오는'</strong> 방식이었어요.</p>
+    <h2>질문의 질이 답의 질을 결정해요</h2>
+    <p>바로 <strong>프롬프트 엔지니어링</strong>이에요. 쉽게 말하면, <strong>AI에게 좋은 질문을 하는 기술</strong>이에요. 아기 마음을 읽어주는 부모의 정성 같은 거예요.</p>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>1세대 AI는 글자로만 소통했어요. 사진이나 음성은 이해하지 못했죠.</li>
+      <li>좋은 질문이 좋은 답을 만들어요. 이걸 "프롬프트 엔지니어링"이라고 불러요.</li>
+      <li>시키면 하지만 스스로 판단하지 못하는, 갓 입사한 신입사원 같은 존재였어요.</li>
+    </ul>`
+  },
+  // 02-gen2-multimodal (1)
+  {
+    title: "2세대: 눈과 귀가 생긴 아이",
+    content: `<h1>2세대: 눈과 귀가 생긴 아이</h1>
+    <h2>"엄마, 저기 강아지 있어!"</h2>
+    <p>아이가 자라면 어느 순간 세상을 눈으로 보고, 귀로 듣기 시작해요. 2세대 AI에게도 똑같은 일이 벌어졌어요. 드디어 <strong>눈과 귀가 생긴 거예요</strong>.</p>
+    <p>이런 능력을 <strong>멀티모달(multimodal)</strong>이라고 불러요. 쉽게 말하면, <strong>여러 가지 방식으로 소통할 수 있다</strong>는 뜻이죠.</p>
+    <h2>사진 한 장이면 충분해요</h2>
+    <p>산책길에 예쁜 꽃을 발견했어요. 그냥 <strong>사진을 한 장 찍어서 AI에게 보여주면</strong> 이름을 알려줘요.</p>
+    <p>냉장고를 열었는데 뭘 해먹을지 모르겠어요. <strong>냉장고 안을 찍어서 AI에게 보여주면</strong> 레시피를 제안해줘요.</p>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>2세대 AI는 사진, 음성, 영상도 이해해요. 이걸 "멀티모달"이라고 불러요.</li>
+      <li>타이핑 없이 사진과 음성으로 소통할 수 있게 되면서, 누구나 AI를 쓸 수 있는 시대가 열렸어요.</li>
+    </ul>`
+  },
+  // 03-gen3-tools (1)
+  {
+    title: "3세대: 도구를 쓰는 학생",
+    content: `<h1>3세대: 도구를 쓰는 학생</h1>
+    <h2>백과사전을 직접 찾아보는 아이</h2>
+    <p>아이가 자라면 스스로 백과사전을 펼쳐 찾아보기 시작해요. 3세대 AI에게도 똑같은 변화가 일어났어요.</p>
+    <p>3세대 AI는 <strong>인터넷을 실시간으로 검색</strong>할 수 있고, <strong>PDF 문서나 엑셀 파일</strong>도 읽을 수 있어요.</p>
+    <h2>"근거 있는 답변"의 시대</h2>
+    <p>3세대 AI는 그냥 "맞아요"라고 대답하는 게 아니라, <strong>"이런 자료에 따르면 이렇습니다"</strong> 하고 출처를 밝히며 대답해요.</p>
+    <h2>"거짓말은 안 돼요!"</h2>
+    <p><strong>환각(hallucination)</strong> — 쉽게 말하면 <strong>"모르면서 아는 척하는 것"</strong>이에요. 3세대 AI는 이 문제가 많이 줄었어요.</p>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>3세대 AI는 인터넷 검색과 문서 분석이 가능해요.</li>
+      <li>출처를 밝히며 답변하는 "근거 있는 답변" 시대가 열렸어요.</li>
+      <li>"환각" 현상이 크게 줄어, 더 믿을 수 있는 비서가 됐어요.</li>
+    </ul>`
+  },
+  // 04-gen4-agents (1)
+  {
+    title: "4세대: 스스로 일하는 어른",
+    content: `<h1>4세대: 스스로 일하는 어른</h1>
+    <h2>"엄마, 제가 마트 다녀올게요!"</h2>
+    <p>4세대 AI는 <strong>목표만 알려주면 스스로 계획을 세우고, 필요한 일을 하나하나 실행하고, 결과까지 가져다줘요.</strong> 이런 AI를 <strong>에이전트(Agent)</strong>라고 불러요.</p>
+    <h2>여행 하나로 이해하는 에이전트</h2>
+    <blockquote>"다음 주 부산 여행 계획 좀 세워줘. 2박 3일이고, 해산물 좋아해."</blockquote>
+    <p>4세대 AI는 이렇게 움직여요:</p>
+    <ol>
+      <li><strong>계획을 세워요</strong>: "2박 3일 부산 여행, 해산물 중심으로 계획하겠습니다."</li>
+      <li><strong>항공편을 검색해요</strong>: 가격과 시간대를 비교해서 가장 좋은 선택지를 찾아요.</li>
+      <li><strong>숙소를 비교해요</strong>: 해운대 근처 호텔 여러 곳의 가격과 후기를 분석해요.</li>
+      <li><strong>맛집을 찾아요</strong>: 자갈치시장 근처 해산물 맛집을 정리해요.</li>
+      <li><strong>일정표를 만들어줘요</strong>: 이동 시간까지 고려한 완벽한 계획표를 완성해요.</li>
+    </ol>`
+  },
+  // 04-gen4-agents (2)
+  {
+    title: "4세대: 스스로 일하는 어른",
+    content: `<h1>한눈에 보는 AI 성장 기록</h1>
+    <table>
+      <tr><th>세대</th><th>비유</th><th>할 수 있는 일</th><th>한계</th></tr>
+      <tr><td>1세대</td><td>갓 태어난 아기</td><td>글자로 질문하면 글자로 대답</td><td>사진, 음성 이해 못 함</td></tr>
+      <tr><td>2세대</td><td>눈과 귀가 생긴 아이</td><td>사진, 음성, 영상도 이해</td><td>자기 머릿속 지식만 사용</td></tr>
+      <tr><td>3세대</td><td>도구를 쓰는 학생</td><td>인터넷 검색, 문서 분석</td><td>시키는 것만 함</td></tr>
+      <tr><td>4세대</td><td>스스로 일하는 어른</td><td>목표만 주면 알아서 실행</td><td>아직 발전 중!</td></tr>
+    </table>
+    <p>에이전트에 대한 더 자세한 이야기는 뒷부분에서 다시 만나요!</p>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>4세대 AI는 목표만 알려주면 스스로 계획하고 실행하는 "에이전트"예요.</li>
+      <li>여행 계획처럼 여러 단계가 필요한 일도 알아서 처리해줘요.</li>
+      <li>AI는 아기에서 어른으로 성장했고, 지금도 계속 발전하고 있어요.</li>
+    </ul>`
+  },
+  // Ch04 README
+  {
+    title: "나만의 AI 드림팀",
+    content: `<h1>Part 4. 나만의 AI 드림팀</h1>
+    <p>AI가 하나만 있는 게 아니라는 거, 알고 계셨나요? 마치 축구팀에 골키퍼, 공격수, 수비수가 각각 다른 역할을 하듯이, AI에도 각자 잘하는 게 달라요.</p>
+    <h2>이 장에서 배우는 것</h2>
+    <ul>
+      <li><strong>클로드(Claude)</strong>: 꼼꼼하게 읽고 정리하는 분석가</li>
+      <li><strong>GPT</strong>: 아이디어가 샘솟는 창의적인 만능 해결사</li>
+      <li><strong>제미나이(Gemini)</strong>: 최신 정보를 빠르게 찾아주는 정보 수집가</li>
+      <li><strong>비빔밥 전략</strong>: 세 AI를 상황에 맞게 섞어 쓰는 방법</li>
+    </ul>
+    <h2>왜 여러 AI를 알아야 할까요?</h2>
+    <p>요리할 때 칼 하나로 모든 걸 하지 않잖아요. 과도, 식칼, 빵칼이 각각 용도가 다르듯이, AI도 상황에 따라 적합한 게 달라요.</p>`
+  },
+  // 01-claude
+  {
+    title: "클로드 — 꼼꼼한 분석가",
+    content: `<h1>클로드 — 꼼꼼한 분석가</h1>
+    <h2>안경 쓴 과외 선생님</h2>
+    <p>클로드의 성격을 한마디로 표현하면, <strong>안경 쓴 엄격해 보이지만 자상한 과외 선생님</strong>이에요.</p>
+    <p>클로드의 가장 큰 장점은 <strong>긴 글을 읽고 핵심을 정리하는 능력</strong>이에요. <strong>논리적인 설명</strong>도 클로드의 강점이에요.</p>
+    <h2>이럴 때 클로드를 부르세요</h2>
+    <ul>
+      <li><strong>복잡한 계약서나 약관 요약</strong>이 필요할 때</li>
+      <li><strong>아이 독후감이나 과제</strong>를 도와줄 때</li>
+      <li><strong>단체 공지문이나 안내문</strong>을 다듬을 때</li>
+    </ul>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>클로드는 꼼꼼한 분석가 스타일이에요.</li>
+      <li>계약서 요약, 글쓰기 지도, 공지문 다듬기에 강해요.</li>
+      <li>산더미 같은 자료를 줘도 핵심을 콕콕 짚어줘요.</li>
+    </ul>`
+  },
+  // 02-gpt
+  {
+    title: "GPT — 창의적인 만능 해결사",
+    content: `<h1>GPT — 창의적인 만능 해결사</h1>
+    <h2>동네 만물박사 친구</h2>
+    <p>GPT의 성격을 한마디로 표현하면, <strong>동네에서 제일 수다 잘 떠는 만물박사 친구</strong>예요. 뭘 물어봐도 일단 대답이 나오고, 상상력이 풍부해요.</p>
+    <p>GPT의 가장 큰 강점은 <strong>아이디어를 뿜어내는 능력</strong>이에요.</p>
+    <h2>이럴 때 GPT를 부르세요</h2>
+    <ul>
+      <li><strong>모임이나 행사를 계획</strong>할 때</li>
+      <li><strong>여행 계획을 세울 때</strong></li>
+      <li><strong>AI를 처음 접하는 분</strong>이라면 GPT부터 시작하세요</li>
+    </ul>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>GPT는 아이디어가 샘솟는 만능 해결사예요.</li>
+      <li>모임 계획, 여행 일정, 메뉴 추천 등에 도움을 줘요.</li>
+      <li>AI를 처음 쓰는 분이라면 GPT부터 시작하세요.</li>
+    </ul>`
+  },
+  // 03-gemini
+  {
+    title: "제미나이 — 빠른 정보 수집가",
+    content: `<h1>제미나이 — 빠른 정보 수집가</h1>
+    <h2>최신 신문을 항상 끼고 사는 정보통</h2>
+    <p>제미나이의 성격을 한마디로 표현하면, <strong>아침마다 신문 세 개를 읽고 동네 소식까지 꿰뚫고 있는 정보통 이웃</strong>이에요.</p>
+    <p>제미나이의 가장 큰 강점은 <strong>실시간 정보 검색</strong>이에요. 구글 검색과 직접 연결되어 있어서, <strong>지금 이 순간</strong>의 정보를 가져올 수 있어요.</p>
+    <h2>이럴 때 제미나이를 부르세요</h2>
+    <ul>
+      <li><strong>외출 전 빠르게 정보 확인</strong>할 때</li>
+      <li><strong>눈앞에 있는 것이 궁금</strong>할 때 — 사진을 찍어서 물어보세요</li>
+      <li><strong>최신 뉴스나 트렌드</strong>가 궁금할 때</li>
+    </ul>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>제미나이는 실시간 정보를 빠르게 가져오는 정보 수집가예요.</li>
+      <li>"지금 당장" 필요한 정보에 특히 강해요.</li>
+      <li>사진을 찍어서 보여주면 바로 알려줘요.</li>
+    </ul>`
+  },
+  // 04-bibimbap (1)
+  {
+    title: "비빔밥 전략: AI 섞어 쓰기",
+    content: `<h1>비빔밥 전략: AI 섞어 쓰기</h1>
+    <h2>나물만으로는 비빔밥이 안 돼요</h2>
+    <p>비빔밥을 떠올려 보세요. 여러 가지 재료가 어우러져야 비로소 비빔밥이 되죠. AI도 마찬가지예요. <strong>상황에 맞게 섞어 쓰면 훨씬 더 좋은 결과</strong>를 얻을 수 있어요.</p>
+    <h2>고수의 비법 3단계</h2>
+    <h3>1단계: 제미나이로 정보 모으기</h3>
+    <p>제미나이에게 필요한 정보를 검색해달라고 해요. 실시간 검색에 강하니까, 최신 자료를 빠르게 모아줘요.</p>
+    <h3>2단계: GPT로 아이디어 정리</h3>
+    <p>제미나이가 모아준 정보를 GPT에게 넘겨서, 다양한 아이디어를 정리해달라고 해요.</p>
+    <h3>3단계: 클로드로 글 다듬기</h3>
+    <p>GPT가 정리한 아이디어를 바탕으로, 클로드에게 깔끔한 글로 만들어달라고 해요.</p>`
+  },
+  // 04-bibimbap (2)
+  {
+    title: "비빔밥 전략: AI 섞어 쓰기",
+    content: `<h1>이럴 땐 이 AI를!</h1>
+    <table>
+      <tr><th>이런 일이 필요할 때</th><th>이 AI를 부르세요</th><th>이유</th></tr>
+      <tr><td>긴 글 요약, 계약서 분석</td><td>클로드</td><td>꼼꼼하게 읽고 핵심을 짚어줘요</td></tr>
+      <tr><td>공부, 글쓰기 도움</td><td>클로드</td><td>논리적으로 차근차근 설명해줘요</td></tr>
+      <tr><td>아이디어 떠올리기</td><td>GPT</td><td>상상력이 풍부하고 다양한 제안을 해줘요</td></tr>
+      <tr><td>여행/모임 계획</td><td>GPT</td><td>재미있고 실용적인 계획을 세워줘요</td></tr>
+      <tr><td>심심할 때 대화 상대</td><td>GPT</td><td>친구처럼 편하게 수다 떨 수 있어요</td></tr>
+      <tr><td>오늘 날씨, 뉴스 확인</td><td>제미나이</td><td>실시간 검색으로 최신 정보를 줘요</td></tr>
+      <tr><td>사진 찍어서 물어보기</td><td>제미나이</td><td>이미지 분석이 뛰어나요</td></tr>
+      <tr><td>맛집, 장소 찾기</td><td>제미나이</td><td>구글 검색 연동으로 정확해요</td></tr>
+    </table>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>AI도 비빔밥처럼 섞어 써야 최고의 결과를 얻을 수 있어요.</li>
+      <li>제미나이로 정보를 모으고, GPT로 아이디어를 정리하고, 클로드로 글을 다듬으세요.</li>
+      <li>상황별 참조표를 활용하면 어떤 AI를 쓸지 고민할 필요가 없어요.</li>
+    </ul>`
+  },
+  // Ch05 README
+  {
+    title: "에이전트란 무엇인가요?",
+    content: `<h1>Part 5. 에이전트란 무엇인가요?</h1>
+    <p>최근 AI 세계에서 가장 뜨거운 화두가 있어요. 바로 <strong>"에이전트(Agent)"</strong>라는 개념이에요.</p>
+    <p>여행사 직원에게 "제주도 여행 좀 알아봐 주세요"라고 하면, 그 직원이 알아서 항공편도 찾고, 숙소도 비교하고, 일정표까지 만들어 주잖아요? AI 에이전트가 바로 그런 거예요.</p>
+    <h2>이번 장에서 배우는 것</h2>
+    <ul>
+      <li><strong>도구와 동료의 차이</strong>: AI가 "대답만 하는 도구"에서 "스스로 행동하는 동료"로 바뀌고 있어요</li>
+      <li><strong>에이전트의 작동 원리</strong>: 에이전트가 어떤 순서로 일하는지 알아봐요</li>
+      <li><strong>일상 속 에이전트</strong>: 여행 계획, 쇼핑, 학습에 에이전트가 활용돼요</li>
+    </ul>
+    <blockquote>앞으로 "이것 좀 알아서 해줘"라고 말하면 AI가 스스로 처리하는 시대가 오고 있어요. 이 변화를 미리 이해하면, 두려움 대신 기대감을 가지고 새로운 세상을 맞이할 수 있어요.</blockquote>`
+  },
+  // 01-tool-to-colleague (1)
+  {
+    title: "도구에서 동료로",
+    content: `<h1>도구에서 동료로</h1>
+    <h2>망치와 로봇, 다시 떠올려 볼까요?</h2>
+    <p>과거의 AI는 <strong>망치</strong>와 같았어요. 시키는 것 하나만 하는 도구였어요.</p>
+    <p>그런데 요즘 AI는 <strong>다용도 로봇</strong>처럼 변하고 있어요. 집 안 상황을 보고 스스로 판단해서 움직이는 거예요.</p>
+    <h2>생성형 AI의 한계: 대화는 잘 하지만...</h2>
+    <p>ChatGPT나 클로드 같은 생성형 AI는 정말 대화를 잘해요. 하지만 <strong>실제로 "행동"을 하지는 못한다</strong>는 거예요.</p>
+    <p>이것이 바로 <strong>"알려주는 AI"의 한계</strong>예요.</p>
+    <h2>에이전트형 AI의 등장: "해주는 AI"</h2>
+    <p><strong>에이전트형 AI(Agentic AI)</strong>는 <strong>스스로 계획을 세우고, 여러 단계를 거쳐서 실행하고, 중간에 문제가 생기면 알아서 해결하는 AI</strong>예요.</p>`
+  },
+  // 01-tool-to-colleague (2)
+  {
+    title: "도구에서 동료로",
+    content: `<h1>핵심 차이를 정리해 볼까요?</h1>
+    <table>
+      <tr><th>구분</th><th>생성형 AI (GenAI)</th><th>에이전트형 AI (Agentic AI)</th></tr>
+      <tr><td>별명</td><td>"알려주는 AI"</td><td>"해주는 AI"</td></tr>
+      <tr><td>하는 일</td><td>질문에 답하기, 글 쓰기</td><td>계획 세우기 + 직접 실행하기</td></tr>
+      <tr><td>비유</td><td>레시피를 알려주는 요리 선생님</td><td>직접 장보고 요리하는 도우미</td></tr>
+      <tr><td>사람의 역할</td><td>직접 실행해야 함</td><td>결과를 확인하고 판단하면 됨</td></tr>
+    </table>
+    <p>지금까지는 AI에게 "어떻게 하면 돼?"라고 <strong>물어봤다면</strong>, 앞으로는 "이것 좀 해줘"라고 <strong>맡기게</strong> 되는 거예요.</p>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li><strong>생성형 AI</strong>는 "알려주는 AI"로, 직접 행동하지는 못해요.</li>
+      <li><strong>에이전트형 AI</strong>는 "해주는 AI"로, 스스로 계획을 세우고 실행할 수 있어요.</li>
+      <li>AI가 "도구"에서 "동료"로 변하고 있어요.</li>
+    </ul>`
+  },
+  // 02-how-agents-work (1)
+  {
+    title: "에이전트가 일하는 방식",
+    content: `<h1>에이전트가 일하는 방식</h1>
+    <h2>에이전트의 3단계 작동 원리</h2>
+    <h3>1단계: 목표 이해 — "뭘 해야 하지?"</h3>
+    <p>먼저 여러분이 원하는 것이 정확히 무엇인지 파악해요. 정보가 부족하면 질문을 하기도 하고, 이전 대화를 참고해서 스스로 판단하기도 해요.</p>
+    <h3>2단계: 계획 수립 — "어떤 순서로 하지?"</h3>
+    <p>목표를 이해했으면, 어떻게 할지 계획을 세워요. 일반 AI는 하나하나 지시해야 하지만, 에이전트는 세부 단계를 <strong>스스로</strong> 만들어내요.</p>
+    <h3>3단계: 실행과 조정 — "상황에 맞게 유연하게!"</h3>
+    <p>에이전트는 실행하면서 동시에 상황을 살피고, 문제가 생기면 유연하게 대응해요. 자율주행 자동차가 목적지만 알면 알아서 가는 것과 같아요.</p>`
+  },
+  // 02-how-agents-work (2)
+  {
+    title: "에이전트가 일하는 방식",
+    content: `<h1>중요한 점: 아직 완벽하지는 않아요</h1>
+    <p>회사에 새로 온 신입 비서를 생각해 보세요. 똑똑하고 열정적이지만, 아직 사정을 잘 모르니까 가끔 실수를 하죠.</p>
+    <p>AI 에이전트도 마찬가지예요. 대부분의 일은 잘 처리하지만, 가끔 엉뚱한 판단을 할 수 있어요. 그래서 <strong>중간중간 확인하는 것이 중요해요.</strong></p>
+    <p>사람이 <strong>"감독자"</strong> 역할을 하는 것, 이것이 지금 단계에서는 정말 중요해요.</p>
+    <blockquote>AI를 맹목적으로 믿는 것도, 지나치게 두려워하는 것도 아닌, <strong>적절히 확인하면서 함께 일하는 것</strong>이 가장 현명한 방법이에요.</blockquote>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>에이전트는 <strong>목표 이해 → 계획 수립 → 실행과 조정</strong>, 세 단계로 일해요.</li>
+      <li>실행 중 문제가 생기면 스스로 대안을 찾는 <strong>유연함</strong>을 가지고 있어요.</li>
+      <li>아직 완벽하지 않기 때문에, 사람이 <strong>감독자 역할</strong>을 하는 것이 중요해요.</li>
+    </ul>`
+  },
+  // 03-agent-examples (1)
+  {
+    title: "일상 속 에이전트 예시",
+    content: `<h1>일상 속 에이전트 예시</h1>
+    <h2>예시 1: 여행 계획 에이전트</h2>
+    <blockquote>"제주도 2박 3일 가족여행 계획 좀 짜줘. 초등학생 아이가 있고, 예산은 100만 원 정도야."</blockquote>
+    <p>여행 계획 에이전트는 이렇게 일해요:</p>
+    <ol>
+      <li>여행 날짜에 맞는 <strong>항공편을 검색</strong>하고 가격을 비교해요</li>
+      <li>키즈풀이 있는 <strong>숙소를 찾아서</strong> 가격과 후기를 정리해줘요</li>
+      <li>아이와 함께 가기 좋은 <strong>관광지를 추천</strong>해요</li>
+      <li>예산 안에 맞춰서 <strong>완성된 일정표</strong>로 만들어줘요</li>
+    </ol>
+    <h2>예시 2: 쇼핑 에이전트</h2>
+    <blockquote>"60대 엄마 생일 선물 추천해줘. 예산은 5만 원이고, 건강 관련이면 좋겠어."</blockquote>
+    <p>여러 쇼핑몰에서 검색하고, 후기와 평점을 비교해서 추천 목록을 만들어줘요.</p>`
+  },
+  // 03-agent-examples (2)
+  {
+    title: "일상 속 에이전트 예시",
+    content: `<h1>일상 속 에이전트 예시 (계속)</h1>
+    <h2>예시 3: 학습 에이전트</h2>
+    <blockquote>"영어 공부 좀 도와줘. 여행 가서 간단한 대화를 하고 싶어."</blockquote>
+    <ol>
+      <li>간단한 테스트로 <strong>현재 수준을 파악</strong>해요</li>
+      <li>목표에 맞는 <strong>맞춤 커리큘럼</strong>을 만들어요</li>
+      <li>매일 적당한 양의 <strong>연습 문제</strong>를 제공해요</li>
+      <li>틀린 부분을 분석해서 <strong>약점을 보완</strong>하는 문제를 더 내줘요</li>
+    </ol>
+    <h2>지금 쓸 수 있는 것 vs 아직 미래 이야기</h2>
+    <p>지금도 웹 검색, 문서 생성 등 <strong>에이전트적 기능</strong>을 경험할 수 있지만, 완전한 자동화는 아직 발전 중이에요.</p>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>AI 에이전트는 여행 계획, 쇼핑, 학습 등 <strong>다양한 영역</strong>에서 활약할 수 있어요.</li>
+      <li>AI가 "알려주는 것"에서 "해주는 것"으로 변하는 중간 단계에 있어요.</li>
+    </ul>`
+  },
+  // Ch06 README
+  {
+    title: "여러 AI가 협업한다",
+    content: `<h1>Part 6. 여러 AI가 협업한다</h1>
+    <p>오케스트라를 떠올려 보세요. 바이올린 혼자서도 아름다운 소리를 내지만, 첼로, 플루트, 드럼이 함께하면 훨씬 웅장하고 풍성한 음악이 만들어지잖아요.</p>
+    <p>AI 세계에서도 비슷한 일이 일어나고 있어요. 이것을 <strong>"오케스트레이션(Orchestration)"</strong>이라고 해요.</p>
+    <h2>이번 장에서 배우는 것</h2>
+    <ul>
+      <li><strong>AI 팀워크</strong>: 여러 AI가 각자의 강점을 살려 함께 일하는 방법</li>
+      <li><strong>오케스트레이션의 개념</strong>: AI끼리의 협업</li>
+      <li><strong>생성형 AI에서 에이전트형 AI까지</strong>: 전체 여정 정리</li>
+    </ul>
+    <blockquote>앞으로 우리는 하나의 AI만 쓰는 것이 아니라, <strong>여러 AI의 도움을 동시에 받는 시대</strong>를 살게 될 거예요.</blockquote>`
+  },
+  // 01-ai-teamwork (1)
+  {
+    title: "오케스트라처럼 협업하는 AI",
+    content: `<h1>오케스트라처럼 협업하는 AI</h1>
+    <h2>우리 집의 든든한 남매들</h2>
+    <p>여러분 집에 각자 잘하는 게 다른 남매가 있다고 상상해 보세요.</p>
+    <ul>
+      <li><strong>첫째 (클로드)</strong>: 글솜씨가 뛰어나요. 편지 쓰기, 문서 정리를 잘해요.</li>
+      <li><strong>둘째 (GPT)</strong>: 아이디어가 넘쳐요. 기획, 브레인스토밍을 잘해요.</li>
+      <li><strong>셋째 (제미나이)</strong>: 정보 찾기의 달인이에요. 인터넷 검색, 자료 조사를 잘해요.</li>
+    </ul>
+    <h2>"번갈아 쓰기"를 넘어서</h2>
+    <p>지금도 많은 분들이 여러 AI를 <strong>번갈아</strong> 쓰고 있어요. 하지만 불편한 점이 있어요. <strong>사람이 직접 중간에서 연결 역할을 해야 한다는 거예요.</strong></p>
+    <p>이제 한 단계 더 나아가고 있어요. <strong>AI끼리 자동으로 협업하는 단계</strong>가 오고 있거든요.</p>`
+  },
+  // 01-ai-teamwork (2)
+  {
+    title: "오케스트라처럼 협업하는 AI",
+    content: `<h1>지휘자가 필요해요</h1>
+    <p>오케스트라에 지휘자가 있듯이, AI 팀에도 <strong>지휘자</strong>가 필요해요.</p>
+    <p>이 지휘자 역할은 <strong>사람이 할 수도 있고, 중심 AI가 할 수도 있어요.</strong></p>
+    <p>지금 단계에서는 대부분 사람이 지휘자예요. 하지만 점점 중심 AI가 다른 AI들을 관리하는 방식으로 발전하고 있어요.</p>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>여러 AI가 각자의 강점을 살려 <strong>팀처럼 협업</strong>할 수 있어요.</li>
+      <li>지금은 사람이 중간에서 연결해야 하지만, 점점 <strong>AI끼리 자동으로 협업</strong>하는 방향으로 발전하고 있어요.</li>
+      <li>좋은 협업을 위해서는 <strong>지휘자 역할</strong>이 중요해요.</li>
+    </ul>`
+  },
+  // 02-genai-to-agentic (1)
+  {
+    title: "GenAI에서 Agentic AI까지",
+    content: `<h1>GenAI에서 Agentic AI까지</h1>
+    <h2>지금까지의 여정을 돌아보며</h2>
+    <h3>생성형 AI (GenAI): "만들어주는 AI"</h3>
+    <ul>
+      <li>글을 써달라고 하면 멋진 글을 써주고</li>
+      <li>그림을 그려달라고 하면 예쁜 그림을 만들어주고</li>
+      <li>질문에 대해 자세하고 친절하게 답해주는 AI</li>
+    </ul>
+    <h3>에이전트형 AI (Agentic AI): "알아서 해주는 AI"</h3>
+    <ul>
+      <li>스스로 <strong>계획</strong>을 세우고</li>
+      <li>여러 <strong>도구</strong>를 활용하며</li>
+      <li>복잡한 일을 <strong>단계별로 실행</strong>하고</li>
+      <li>문제가 생기면 <strong>유연하게 대처</strong>하는 AI</li>
+    </ul>
+    <h2>비유로 한눈에 정리하기</h2>
+    <p><strong>생성형 AI는 훌륭한 요리사</strong>예요. 시키면 맛있게 만들어줘요. 하지만 시키는 것만 해요.</p>
+    <p><strong>에이전트형 AI는 집안일 도우미</strong>예요. "오늘 저녁 좀 부탁해요"라고 하면, 알아서 다 해줘요.</p>`
+  },
+  // 02-genai-to-agentic (2)
+  {
+    title: "GenAI에서 Agentic AI까지",
+    content: `<h1>왜 이 변화가 중요한가요?</h1>
+    <p>이 변화의 핵심은 <strong>우리의 역할이 바뀐다</strong>는 거예요.</p>
+    <p>지금까지 우리는 AI를 쓸 때 <strong>"시키는 사람"</strong>이었어요. 하지만 에이전트형 AI 시대에는 <strong>"맡기는 사람"</strong>이 돼요.</p>
+    <p>가장 중요한 능력은 <strong>"무엇을 맡길지 판단하는 것"</strong>이에요. 이 판단력은 AI를 많이 써볼수록 자연스럽게 길러져요.</p>
+    <h2>두려워할 필요 없어요</h2>
+    <p>세탁기가 처음 나왔을 때도, 전자레인지도 처음에는 두려웠지만, 지금은 없어서는 안 될 도구가 되었어요. AI도 같은 길을 걷고 있어요.</p>
+    <blockquote>이 글을 읽고 있다는 것 자체가 이미 첫걸음을 내디딘 거예요. 여러분은 이미 AI 시대를 준비하고 있는 거예요.</blockquote>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li><strong>GenAI</strong>는 "만들어주는 AI", <strong>Agentic AI</strong>는 "알아서 해주는 AI"예요.</li>
+      <li>앞으로 가장 중요한 능력은 <strong>"무엇을 AI에게 맡길지 판단하는 것"</strong>이에요.</li>
+      <li>새로운 기술은 늘 두려움을 가져오지만, 결국 삶을 더 편하게 만들어 줘요.</li>
+    </ul>`
+  },
+  // Ch07 README
+  {
+    title: "AI에게 말 거는 법",
+    content: `<h1>Part 7. AI에게 말 거는 법</h1>
+    <p>AI를 처음 만나면 뭐라고 말해야 할지 막막하죠? 하지만 걱정 마세요. AI에게 말 거는 건 어려운 프로그래밍이 아니에요. 그냥 친구한테 이야기하듯이 하면 돼요.</p>
+    <p><strong>"명령"이 아니라 "대화"</strong>라는 게 핵심이에요. 식당에서 "밥 줘!"라고 하는 것과 "오늘 좀 피곤한데, 따뜻하고 든든한 거 뭐가 있을까요?"라고 하는 것은 전혀 다른 결과를 가져오잖아요.</p>
+    <h2>이 장에서 배우는 것</h2>
+    <ul>
+      <li><strong>명령이 아닌 대화</strong>: 내 상황을 설명하며 자연스럽게 대화하는 법</li>
+      <li><strong>좋은 질문 만드는 법</strong>: 같은 질문이라도 어떻게 물어보느냐에 따라 AI의 답이 달라져요</li>
+    </ul>`
+  },
+  // 01-conversation-not-command (1)
+  {
+    title: "명령하지 말고 대화하세요",
+    content: `<h1>명령하지 말고 대화하세요</h1>
+    <h2>기계한테 말하는 게 아니에요</h2>
+    <p>AI는 자판기가 아니에요. 오히려 처음 만난 똑똑한 친구에 가까워요.</p>
+    <h3>X 잘못된 방법: 딱딱한 기계식 명령</h3>
+    <blockquote><strong>나</strong>: 레시피 알려줘</blockquote>
+    <p>AI는 정보가 없으니까, 그냥 일반적이고 막연한 답을 내놓아요.</p>
+    <h3>O 좋은 방법: 친구와 대화하듯이</h3>
+    <blockquote><strong>나</strong>: 냉장고에 두부랑 신김치가 있는데, 매운 걸 좋아하는 남편이랑 둘이 먹을 저녁 뭐가 좋을까?</blockquote>
+    <p>AI는 상황을 파악해서 딱 맞는 메뉴를 추천해줘요. 핵심은 간단해요. <strong>내 상황을 설명해주는 거예요.</strong></p>`
+  },
+  // 01-conversation-not-command (2)
+  {
+    title: "명령하지 말고 대화하세요",
+    content: `<h1>상황을 자세히 설명할수록 AI는 똑똑해져요</h1>
+    <p>AI에게 알려줄수록 더 정확한 답을 줘요. 의사 선생님한테 아픈 곳을 자세히 말할수록 정확한 진단을 받는 것과 같아요.</p>
+    <ul>
+      <li><strong>누가</strong> 쓸 건지 (나 혼자? 아이와 함께?)</li>
+      <li><strong>언제</strong> 필요한지 (오늘 당장? 이번 주말?)</li>
+      <li><strong>왜</strong> 필요한지 (건강 때문에? 손님 접대?)</li>
+      <li><strong>어떤 조건</strong>이 있는지 (예산, 시간, 알레르기 등)</li>
+    </ul>
+    <h2>대화가 깊어질수록 AI는 동반자가 돼요</h2>
+    <p>한 번 질문하고 끝내지 마세요. 대화를 이어가 보세요. AI는 앞에서 나눈 이야기를 기억하고, 점점 더 맞는 답을 해줘요.</p>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>AI에게는 "명령"이 아니라 "대화"를 하세요.</li>
+      <li>상황(누가, 언제, 왜, 어떤 조건)을 자세히 알려줄수록 답이 똑똑해져요.</li>
+      <li>대화를 이어가면, AI가 점점 나만의 동반자가 돼요.</li>
+    </ul>`
+  },
+  // 02-better-questions (1)
+  {
+    title: "좋은 질문의 비결",
+    content: `<h1>좋은 질문의 비결</h1>
+    <h2>좋은 질문의 3요소</h2>
+    <h3>1. 배경 알려주기 — "나는 이런 사람이에요"</h3>
+    <blockquote>"나는 50대 주부인데..."<br>"저는 요리를 거의 안 해본 대학생인데..."<br>"60대 퇴직자인데 혼자 살고 있어요..."</blockquote>
+    <p>이 한 줄이 있고 없고의 차이가 엄청나요.</p>
+    <h3>2. 구체적 상황 — "지금 이런 상황이에요"</h3>
+    <blockquote>"이번 주말에 시부모님이 오시는데..."<br>"내일 아이 학교에서 체험학습 보고서를 내래요..."</blockquote>
+    <h3>3. 원하는 결과 — "이런 걸 원해요"</h3>
+    <blockquote>"...간단하면서 정성스러워 보이는 상차림을 알려줘"<br>"...초등학생도 이해할 수 있게 쉽게 써줘"</blockquote>
+    <p>세 가지를 합치면: <strong>"나는 50대 주부인데, 이번 주말에 시부모님이 오시거든요. 간단하면서도 정성스러워 보이는 상차림을 알려줘."</strong></p>`
+  },
+  // 02-better-questions (2)
+  {
+    title: "좋은 질문의 비결",
+    content: `<h1>좋은 질문을 만드는 팁</h1>
+    <h2>한 번에 완벽한 답을 기대하지 마세요</h2>
+    <p>AI가 처음에 준 답이 100점이 아닐 수 있어요. 대화를 이어가면 돼요.</p>
+    <blockquote>"좀 더 간단한 건 없어?"<br>"양은 4인분으로 맞춰줘"<br>"디저트도 추천해줘"</blockquote>
+    <h2>꿀팁: AI에게 역할을 부여해보세요</h2>
+    <blockquote>"너는 20년 경력의 요리 전문가야. 초보도 할 수 있는 김치찌개 레시피를 알려줘."<br>"너는 여행 가이드야. 60대 부부가 쉴 수 있는 국내 여행지를 추천해줘."</blockquote>
+    <h2>매일 5분, 하나씩 질문하는 습관</h2>
+    <p>매일 5분, 궁금한 거 하나만 AI에게 물어보세요. 한 달만 꾸준히 해보세요.</p>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>좋은 질문: <strong>배경</strong>(나는 누구), <strong>상황</strong>(지금 이런 상황), <strong>원하는 결과</strong>(이런 답이 필요해)</li>
+      <li>한 번에 완벽한 답을 기대하지 말고, 대화를 이어가며 답을 다듬어가세요.</li>
+      <li>매일 5분씩 AI에게 질문하는 습관이 여러분을 AI 고수로 만들어줘요.</li>
+    </ul>`
+  },
+  // Ch08 README
+  {
+    title: "일상에서 AI 활용하기",
+    content: `<h1>Part 8. 일상에서 AI 활용하기</h1>
+    <p>AI 사용법을 배웠으니, 이제 실제 생활에서 써볼 차례예요! 요리, 여행, 글쓰기처럼 누구나 하는 일에 AI를 살짝 끼워 넣으면, 생활이 놀라울 만큼 편해져요.</p>
+    <h2>이 장에서 배우는 것</h2>
+    <ul>
+      <li><strong>요리 도우미</strong>: 냉장고 재료를 활용한 레시피 추천받는 법</li>
+      <li><strong>여행 가이드</strong>: 내 상황에 딱 맞는 여행 일정 만드는 법</li>
+      <li><strong>글쓰기 도우미</strong>: 공지문, 보고서, 경조사 문자까지 AI와 함께 쓰는 법</li>
+      <li><strong>매일 5분 AI 습관</strong>: 꾸준히 AI와 친해지는 방법</li>
+    </ul>`
+  },
+  // 01-cooking (1)
+  {
+    title: "요리 도우미",
+    content: `<h1>요리 도우미</h1>
+    <h2>냉장고를 열어보세요, AI가 메뉴를 정해줘요</h2>
+    <p>"오늘 저녁 뭐 먹지?"는 전 국민의 고민이잖아요. AI는 이 고민을 해결하는 데 정말 탁월해요.</p>
+    <h2>재료 사진 한 장이면 끝</h2>
+    <p>냉장고 안을 사진으로 찍어서 AI에게 보내보세요. 마치 요리 잘하는 친구한테 냉장고 문을 열어 보여주는 것과 같아요.</p>
+    <h2>대화로 메뉴 정하기</h2>
+    <blockquote><strong>나</strong>: 두부랑 신김치로 뭐 해먹을까? 남편이 매운 거 좋아해.<br><br><strong>AI</strong>: 김치두부찌개는 어떠세요? 두부를 큼직하게 썰어 넣으면 든든하고요...<br><br><strong>나</strong>: 좋다! 근데 나 요리 초보인데, 쉽게 알려줘.<br><br><strong>AI</strong>: 그럼 아주 쉽게 알려드릴게요!</blockquote>`
+  },
+  // 01-cooking (2)
+  {
+    title: "요리 도우미",
+    content: `<h1>내 수준에 맞춰서 물어보세요</h1>
+    <p>AI에게 요리를 물어볼 때 이 정보를 같이 알려주면 훨씬 좋은 답을 받아요:</p>
+    <ul>
+      <li><strong>요리 실력</strong>: "요리 초보인데" / "기본적인 요리는 할 수 있어"</li>
+      <li><strong>시간</strong>: "30분 안에 할 수 있는" / "시간이 넉넉해"</li>
+      <li><strong>먹는 사람</strong>: "아이가 먹을 거야" / "어르신이 드실 거야"</li>
+      <li><strong>도구</strong>: "에어프라이어밖에 없어" / "오븐 있어"</li>
+    </ul>
+    <h2>남은 반찬도 AI에게 물어보세요</h2>
+    <p>AI는 잡채볶음밥, 잡채춘권, 잡채김밥 같은 변신 레시피를 알려줘요. 음식물 쓰레기도 줄이고, 새로운 메뉴도 생기고, 일석이조예요.</p>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>냉장고 재료를 AI에게 알려주면 맞춤 레시피를 추천받을 수 있어요.</li>
+      <li>내 요리 실력, 시간, 먹는 사람 정보를 함께 알려주면 더 정확한 레시피를 받아요.</li>
+      <li>남은 반찬 활용법도 AI에게 물어보면 새로운 메뉴가 뚝딱 나와요.</li>
+    </ul>`
+  },
+  // 02-travel (1)
+  {
+    title: "여행 가이드",
+    content: `<h1>여행 가이드</h1>
+    <h2>여행 계획, AI한테 맡겨보세요</h2>
+    <p>AI에게 내 상황을 설명하면, 나한테 딱 맞는 여행 일정을 순식간에 만들어줘요.</p>
+    <h2>실전 예시: 부모님과 나들이</h2>
+    <blockquote>"다리가 불편하신 70대 부모님과 동탄 근처에서 나들이 가려고 해. 걷는 거리가 짧고, 앉아서 쉴 곳이 많은 곳으로 추천해줘."</blockquote>
+    <p>AI가 적합한 장소, 이동 방법, 주차 정보, 근처 식당까지 한 번에 알려줘요.</p>
+    <h2>실전 예시: 가족 여행 일정 짜기</h2>
+    <blockquote>"제주도 2박 3일 가족여행인데, 초등학생 아이 둘이랑 60대 부모님이 함께 가. 렌트카는 있어."</blockquote>
+    <p>대화를 이어가면 더 세밀하게 조정할 수 있어요:</p>
+    <blockquote>"첫째 날 일정이 좀 빡빡한 것 같아. 한 군데 빼줘."<br>"마지막 날 공항 가기 전에 들를 수 있는 곳 있어?"</blockquote>`
+  },
+  // 02-travel (2)
+  {
+    title: "여행 가이드",
+    content: `<h1>복잡한 검색 대신 상황 설명</h1>
+    <p>여행 계획의 핵심은 <strong>내 조건에 맞는 정보</strong>를 찾는 거예요. AI에게 "제주도에서 6살 아이랑 갈 수 있는, 줄 안 서도 되는 맛집"이라고 하면 훨씬 좁혀진 추천을 받을 수 있어요.</p>
+    <p>내 취향, 동행자, 예산, 이동 수단, 체력... 이런 조건을 자유롭게 말할 수 있다는 게 AI 여행 가이드의 가장 큰 장점이에요.</p>
+    <h2>어떤 AI를 쓰면 좋을까?</h2>
+    <ul>
+      <li><strong>최신 정보가 필요할 때</strong>: 제미나이(Gemini)가 좋아요.</li>
+      <li><strong>깔끔한 일정표가 필요할 때</strong>: 클로드(Claude)가 좋아요.</li>
+    </ul>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>내 상황(동행자, 조건, 취향)을 설명하면 맞춤형 일정을 바로 받을 수 있어요.</li>
+      <li>대화를 이어가며 일정을 수정하면, 여행사 상담보다 더 세밀한 계획이 완성돼요.</li>
+      <li>최신 정보는 제미나이, 깔끔한 일정 정리는 클로드가 강점이에요.</li>
+    </ul>`
+  },
+  // 03-writing (1)
+  {
+    title: "글쓰기 도우미",
+    content: `<h1>글쓰기 도우미</h1>
+    <h2>글쓰기가 어려우셨죠? AI가 도와줘요</h2>
+    <p>살다 보면 글을 써야 할 일이 의외로 많아요. 내가 하고 싶은 말을 대충 알려주기만 하면, AI가 깔끔하게 다듬어줘요.</p>
+    <h2>단체 카톡방 공지문 다듬기</h2>
+    <blockquote>"아파트 주민 단체 카톡방에 올릴 공지문 좀 다듬어줘. 내용은 이거야: 이번 토요일에 주차장 공사를 해서 지하 1층 주차장을 못 쓴다."</blockquote>
+    <p>AI가 인사말부터 시작해서, 날짜, 시간, 대안까지 깔끔하게 정리된 공지문을 만들어줘요.</p>
+    <h2>아이 숙제 도와주기</h2>
+    <blockquote>"초등학교 3학년 아이가 '어린왕자'를 읽고 독후감을 써야 해. 초등학생 수준으로 독후감 뼈대를 잡아줘."</blockquote>
+    <p>AI가 아이의 감상을 바탕으로 독후감의 뼈대를 잡아줘요. 아이가 참고해서 자기 말로 다시 쓰면 훌륭한 독후감이 완성돼요.</p>`
+  },
+  // 03-writing (2)
+  {
+    title: "글쓰기 도우미",
+    content: `<h1>경조사 문자 작성</h1>
+    <blockquote>"직장 동료 아버지가 돌아가셨어. 조의 문자를 보내려는데, 격식 있으면서도 진심이 느껴지게 써줘."</blockquote>
+    <p>AI가 상황에 맞는 적절한 문구를 만들어줘요.</p>
+    <h2>글쓰기에 추천하는 AI</h2>
+    <p>글쓰기에는 <strong>클로드(Claude)</strong>를 추천해요. 논리적이고 꼼꼼한 글쓰기에 특히 강해요.</p>
+    <h2>이런 것도 해봐요</h2>
+    <ul>
+      <li>이력서 다듬기</li>
+      <li>편지 쓰기 (감사 편지, 사과 편지)</li>
+      <li>SNS 게시물 작성</li>
+      <li>회의록 정리</li>
+      <li>이메일 답장</li>
+    </ul>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>하고 싶은 말을 대충 알려주면 AI가 깔끔한 글로 다듬어줘요.</li>
+      <li>아이 숙제는 AI가 뼈대를 잡아주고, 아이가 자기 말로 완성하세요.</li>
+      <li>글쓰기에는 클로드(Claude)가 특히 강해요.</li>
+    </ul>`
+  },
+  // 04-daily-habit (1)
+  {
+    title: "매일 5분 AI 습관",
+    content: `<h1>매일 5분 AI 습관</h1>
+    <h2>화분에 물 주듯이, 매일 5분만</h2>
+    <p>AI를 잘 쓰는 비결이 뭘까요? 그냥 <strong>매일 조금씩 쓰는 것</strong>이에요. 하루에 5분, 딱 한 가지만 물어보세요.</p>
+    <h2>한 달이면 우리 동네 AI 고수</h2>
+    <h3>1주차: 매일 하나씩 인사하고 질문해보기</h3>
+    <ul>
+      <li><strong>월요일</strong>: "안녕, 오늘 날씨 어때?"</li>
+      <li><strong>화요일</strong>: "오늘 저녁 메뉴 추천해줘"</li>
+      <li><strong>수요일</strong>: "재미있는 이야기 하나 해줘"</li>
+      <li><strong>목요일</strong>: "'고진감래'가 무슨 뜻이야?"</li>
+      <li><strong>금요일</strong>: "주말에 집에서 할 수 있는 재미있는 거 뭐 있어?"</li>
+      <li><strong>토~일</strong>: 평일에 했던 것 중 재미있었던 걸 다시 해보기</li>
+    </ul>
+    <h3>2주차: 사진 보내보기</h3>
+    <ul>
+      <li>예쁜 <strong>꽃</strong>을 찍어서 "이 꽃 이름이 뭐야?"</li>
+      <li>오늘 만든 <strong>음식</strong> 사진을 보내며 "칼로리가 얼마나 될까?"</li>
+      <li>마트에서 <strong>영양성분표</strong> 사진을 찍어서 "이거 건강에 괜찮아?"</li>
+    </ul>`
+  },
+  // 04-daily-habit (2)
+  {
+    title: "매일 5분 AI 습관",
+    content: `<h1>3~4주차 미션</h1>
+    <h3>3주차: 긴 대화 이어가보기</h3>
+    <p>"이번 주말 나들이 장소 추천해줘"로 시작해서:</p>
+    <blockquote>"거기 주차 편해?" → "아이도 갈 수 있어?" → "근처 맛집은?" → "비 오면 대안은?" → "준비물 뭐 챙길까?"</blockquote>
+    <h3>4주차: 실생활 문제 하나 해결해보기</h3>
+    <ul>
+      <li>"우리집 세탁기가 이상한 소리를 내는데, 무슨 문제일까?"</li>
+      <li>"부모님 칠순 선물 뭐가 좋을까? 예산은 30만 원이야."</li>
+      <li>"아이가 친구랑 싸웠는데, 어떻게 대화하면 좋을까?"</li>
+    </ul>
+    <h2>혼자 가면 빠르지만, 함께 가면 멀리 갑니다</h2>
+    <p>모임방에 오늘 AI한테 물어본 것을 자랑해 보세요. 서로 배우고 응원하면 훨씬 빨리 늘어요.</p>
+    <h2>핵심 요약</h2>
+    <ul>
+      <li>매일 5분, 한 가지씩 질문하는 습관이 AI 실력을 키우는 가장 빠른 길이에요.</li>
+      <li>4주 계획을 따라가면 한 달 후엔 AI 고수가 돼요.</li>
+      <li>모임방에서 서로 공유하면 훨씬 빨리, 훨씬 멀리 갈 수 있어요.</li>
+    </ul>`
+  },
+  // Last page
+  {
+    title: "마지막 페이지",
+    content: `<div class="cover-page">
+      <h1>감사합니다</h1>
+      <div class="ornament"></div>
+      <div class="subtitle">AI따라오실 — 누구나 시작하는 AI 첫걸음</div>
+      <div class="desc" style="margin-top:20px;">
+        여러분은 이미 AI 시대의 첫걸음을 내디뎠어요.<br><br>
+        오늘도 5분, AI에게 말 걸어보세요.<br>
+        여러분은 이미 충분히 잘하고 있어요.<br><br>
+        <strong style="color:#4A6CF7">함께 성장하는 우리 동네 AI 공부방<br>AI따라오실에서 만나요!</strong>
+      </div>
+    </div>`,
+    isCover: true
+  }
+];
+
+// ========== STATE ==========
+let currentSpread = 0; // which "spread" (pair of pages) we're showing
+let totalPages = pages.length;
+let isAnimating = false;
+let isMobile = window.innerWidth <= 768;
+let touchStartX = 0;
+let touchStartY = 0;
+
+// ========== HELPERS ==========
+function getTotalSpreads() {
+  if (isMobile) return totalPages; // single page mode
+  return Math.ceil(totalPages / 2);
+}
+
+function getLeftPageIndex() {
+  if (isMobile) return currentSpread;
+  return currentSpread * 2;
+}
+
+function getRightPageIndex() {
+  if (isMobile) return -1; // no right page
+  return currentSpread * 2 + 1;
+}
+
+// ========== RENDERING ==========
+function renderSpread() {
+  const book = document.getElementById('book');
+  const leftIdx = getLeftPageIndex();
+  const rightIdx = getRightPageIndex();
+
+  // Remove old pages (but keep spine-shadow, book-shadow, click-zones)
+  const oldPages = book.querySelectorAll('.page-wrapper');
+  oldPages.forEach(p => p.remove());
+
+  // Left page
+  if (leftIdx >= 0 && leftIdx < totalPages) {
+    const wrapper = createPageElement(leftIdx, 'left');
+    book.appendChild(wrapper);
+  }
+
+  // Right page (desktop only)
+  if (!isMobile && rightIdx >= 0 && rightIdx < totalPages) {
+    const wrapper = createPageElement(rightIdx, 'right');
+    book.appendChild(wrapper);
+  }
+
+  updateUI();
+}
+
+function createPageElement(pageIdx, side) {
+  const page = pages[pageIdx];
+  const wrapper = document.createElement('div');
+  wrapper.className = `page-wrapper ${side}-page`;
+
+  const face = document.createElement('div');
+  face.className = 'page-face front';
+
+  const content = document.createElement('div');
+  if (page.isCover) {
+    content.className = 'page-content';
+    content.innerHTML = page.content;
+    content.style.padding = '0';
+    content.style.background = 'transparent';
+  } else {
+    content.className = 'page-content';
+    content.innerHTML = page.content;
+  }
+
+  // Page number
+  const pageNum = document.createElement('div');
+  pageNum.className = `page-number ${side}`;
+  pageNum.textContent = (pageIdx + 1);
+
+  face.appendChild(content);
+  if (!page.isCover) {
+    face.appendChild(pageNum);
+  }
+  wrapper.appendChild(face);
+
+  return wrapper;
+}
+
+function updateUI() {
+  const leftIdx = getLeftPageIndex();
+  const rightIdx = isMobile ? leftIdx : getRightPageIndex();
+  const maxIdx = Math.max(leftIdx, rightIdx >= 0 && rightIdx < totalPages ? rightIdx : leftIdx);
+  const displayPage = isMobile ? (leftIdx + 1) : `${leftIdx + 1}-${Math.min(rightIdx + 1, totalPages)}`;
+
+  document.getElementById('pageInfo').textContent = `${displayPage} / ${totalPages} 페이지`;
+
+  const progress = ((maxIdx + 1) / totalPages) * 100;
+  document.getElementById('progressFill').style.width = progress + '%';
+  document.getElementById('progressText').textContent = Math.round(progress) + '%';
+
+  // Nav buttons
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  btnPrev.classList.toggle('disabled', currentSpread <= 0);
+  btnNext.classList.toggle('disabled', currentSpread >= getTotalSpreads() - 1);
+
+  // Spine visibility
+  const spine = document.getElementById('spineShadow');
+  if (isMobile) {
+    spine.style.display = 'none';
+  } else {
+    spine.style.display = 'block';
+  }
+}
+
+// ========== FLIP ANIMATION ==========
+function easeInOutCubic(t) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+function animateFlip(direction, callback) {
+  if (isAnimating) return;
+  isAnimating = true;
+
+  const book = document.getElementById('book');
+  const duration = 650;
+  const start = performance.now();
+
+  // Create a flipping page element
+  const flipWrapper = document.createElement('div');
+  flipWrapper.className = 'page-wrapper flipping';
+  flipWrapper.style.transformStyle = 'preserve-3d';
+  flipWrapper.style.position = 'absolute';
+  flipWrapper.style.width = '50%';
+  flipWrapper.style.height = '100%';
+  flipWrapper.style.zIndex = '55';
+
+  if (isMobile) {
+    flipWrapper.style.width = '100%';
+    flipWrapper.style.left = '0';
+    flipWrapper.style.transformOrigin = direction === 'next' ? 'left center' : 'right center';
+  } else if (direction === 'next') {
+    flipWrapper.style.left = '50%';
+    flipWrapper.style.transformOrigin = 'left center';
+  } else {
+    flipWrapper.style.left = '0';
+    flipWrapper.style.transformOrigin = 'right center';
+  }
+
+  // Front face: current page being flipped
+  // Back face: page being revealed
+  const frontFace = document.createElement('div');
+  frontFace.className = 'page-face front';
+  frontFace.style.background = '#faf8f0';
+
+  const backFace = document.createElement('div');
+  backFace.className = 'page-face back';
+  backFace.style.background = '#faf8f0';
+
+  let frontIdx, backIdx;
+  if (direction === 'next') {
+    if (isMobile) {
+      frontIdx = currentSpread;
+      backIdx = currentSpread + 1;
+    } else {
+      frontIdx = getRightPageIndex();
+      backIdx = (currentSpread + 1) * 2;
+    }
+  } else {
+    if (isMobile) {
+      frontIdx = currentSpread;
+      backIdx = currentSpread - 1;
+    } else {
+      frontIdx = getLeftPageIndex();
+      backIdx = (currentSpread - 1) * 2 + 1;
+    }
+  }
+
+  if (frontIdx >= 0 && frontIdx < totalPages) {
+    const p = pages[frontIdx];
+    const c = document.createElement('div');
+    c.className = 'page-content';
+    if (p.isCover) { c.style.padding = '0'; c.style.background = 'transparent'; }
+    c.innerHTML = p.content;
+    frontFace.appendChild(c);
+  }
+  if (backIdx >= 0 && backIdx < totalPages) {
+    const p = pages[backIdx];
+    const c = document.createElement('div');
+    c.className = 'page-content';
+    if (p.isCover) { c.style.padding = '0'; c.style.background = 'transparent'; }
+    c.innerHTML = p.content;
+    backFace.appendChild(c);
+  }
+
+  flipWrapper.appendChild(frontFace);
+  flipWrapper.appendChild(backFace);
+  book.appendChild(flipWrapper);
+
+  function animate(now) {
+    const elapsed = now - start;
+    const t = Math.min(elapsed / duration, 1);
+    const eased = easeInOutCubic(t);
+
+    let angle;
+    if (direction === 'next') {
+      angle = -180 * eased;
+    } else {
+      angle = 180 * (1 - eased);
+    }
+
+    flipWrapper.style.transform = `rotateY(${angle}deg)`;
+
+    // Dynamic shadow
+    const shadowIntensity = Math.sin(t * Math.PI) * 0.3;
+    flipWrapper.style.filter = `drop-shadow(0 0 ${10 * shadowIntensity}px rgba(0,0,0,${shadowIntensity}))`;
+
+    if (t < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      flipWrapper.remove();
+      if (direction === 'next') {
+        currentSpread++;
+      } else {
+        currentSpread--;
+      }
+      renderSpread();
+      isAnimating = false;
+      if (callback) callback();
+    }
+  }
+
+  if (direction === 'prev') {
+    flipWrapper.style.transform = 'rotateY(180deg)';
+  }
+
+  requestAnimationFrame(animate);
+}
+
+// ========== NAVIGATION ==========
+function nextPage() {
+  if (isAnimating || currentSpread >= getTotalSpreads() - 1) return;
+  animateFlip('next');
+}
+
+function prevPage() {
+  if (isAnimating || currentSpread <= 0) return;
+  animateFlip('prev');
+}
+
+function goToSpread(spread) {
+  if (isAnimating) return;
+  spread = Math.max(0, Math.min(spread, getTotalSpreads() - 1));
+  currentSpread = spread;
+  renderSpread();
+}
+
+// ========== KEYBOARD ==========
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') {
+    e.preventDefault();
+    nextPage();
+  } else if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    prevPage();
+  }
+});
+
+// ========== TOUCH ==========
+document.addEventListener('touchstart', (e) => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+document.addEventListener('touchend', (e) => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+    if (dx < 0) nextPage();
+    else prevPage();
+  }
+}, { passive: true });
+
+// ========== PROGRESS BAR ==========
+function onProgressClick(e) {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const ratio = (e.clientX - rect.left) / rect.width;
+  const targetSpread = Math.round(ratio * (getTotalSpreads() - 1));
+  goToSpread(targetSpread);
+}
+
+// ========== RESIZE ==========
+window.addEventListener('resize', () => {
+  const wasMobile = isMobile;
+  isMobile = window.innerWidth <= 768;
+  if (wasMobile !== isMobile) {
+    // Recalculate spread when switching modes
+    if (isMobile) {
+      // Going to mobile: show left page of current spread
+      currentSpread = getLeftPageIndex();
+    } else {
+      // Going to desktop: calculate which spread contains current page
+      currentSpread = Math.floor(currentSpread / 2);
+    }
+  }
+  const book = document.getElementById('book');
+  if (isMobile) {
+    book.classList.add('single-page-mode');
+  } else {
+    book.classList.remove('single-page-mode');
+  }
+  renderSpread();
+});
+
+// ========== INIT ==========
+function init() {
+  const book = document.getElementById('book');
+  if (isMobile) {
+    book.classList.add('single-page-mode');
+  }
+  renderSpread();
+}
+
+init();
+</script>
+</body>
+</html>

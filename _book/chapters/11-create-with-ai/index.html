@@ -1,0 +1,1027 @@
+
+<!DOCTYPE HTML>
+<html lang="ko" >
+    <head>
+        <meta charset="UTF-8">
+        <title>Ch.11 AI로 만들어보기 · AI따라오실 — 누구나 시작하는 AI 첫걸음</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="HonKit 6.1.7">
+        <meta name="author" content="AI따라오실">
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/@honkit/honkit-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/@honkit/honkit-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="01-images.html" />
+    
+    
+    <link rel="prev" href="../10-prompt-practice/04-when-it-fails.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book honkit-cloak">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="검색어 입력" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    소개
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part 1: AI와 첫 만남</li>
+        
+        
+    
+        <li class="chapter " data-level="2.1" data-path="../01-welcome/">
+            
+                <a href="../01-welcome/">
+            
+                    
+                    Ch.1 환영합니다
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.1.1" data-path="../01-welcome/01-about-community.html">
+            
+                <a href="../01-welcome/01-about-community.html">
+            
+                    
+                    AI따라오실을 소개합니다
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.1.2" data-path="../01-welcome/02-why-now.html">
+            
+                <a href="../01-welcome/02-why-now.html">
+            
+                    
+                    AI, 왜 지금인가요?
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2" data-path="../02-what-is-ai/">
+            
+                <a href="../02-what-is-ai/">
+            
+                    
+                    Ch.2 AI는 무엇인가요?
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.2.1" data-path="../02-what-is-ai/01-ai-as-secretary.html">
+            
+                <a href="../02-what-is-ai/01-ai-as-secretary.html">
+            
+                    
+                    AI는 똑똑한 비서예요
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.2" data-path="../02-what-is-ai/02-what-ai-can-do.html">
+            
+                <a href="../02-what-is-ai/02-what-ai-can-do.html">
+            
+                    
+                    AI가 할 수 있는 것들
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.3" data-path="../02-what-is-ai/03-ai-and-jobs.html">
+            
+                <a href="../02-what-is-ai/03-ai-and-jobs.html">
+            
+                    
+                    혹시 내 일자리를 뺏는 건 아닐까?
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part 2: AI의 성장 이야기</li>
+        
+        
+    
+        <li class="chapter " data-level="3.1" data-path="../03-ai-evolution/">
+            
+                <a href="../03-ai-evolution/">
+            
+                    
+                    Ch.3 말동무에서 동료로
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="3.1.1" data-path="../03-ai-evolution/01-gen1-text.html">
+            
+                <a href="../03-ai-evolution/01-gen1-text.html">
+            
+                    
+                    1세대: 말을 배운 아기
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.1.2" data-path="../03-ai-evolution/02-gen2-multimodal.html">
+            
+                <a href="../03-ai-evolution/02-gen2-multimodal.html">
+            
+                    
+                    2세대: 눈과 귀가 생긴 아이
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.1.3" data-path="../03-ai-evolution/03-gen3-tools.html">
+            
+                <a href="../03-ai-evolution/03-gen3-tools.html">
+            
+                    
+                    3세대: 도구를 쓰는 학생
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.1.4" data-path="../03-ai-evolution/04-gen4-agents.html">
+            
+                <a href="../03-ai-evolution/04-gen4-agents.html">
+            
+                    
+                    4세대: 스스로 일하는 어른
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="3.2" data-path="../04-ai-dream-team/">
+            
+                <a href="../04-ai-dream-team/">
+            
+                    
+                    Ch.4 나만의 AI 드림팀
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="3.2.1" data-path="../04-ai-dream-team/01-claude.html">
+            
+                <a href="../04-ai-dream-team/01-claude.html">
+            
+                    
+                    클로드 — 꼼꼼한 분석가
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.2.2" data-path="../04-ai-dream-team/02-gpt.html">
+            
+                <a href="../04-ai-dream-team/02-gpt.html">
+            
+                    
+                    GPT — 창의적인 만능 해결사
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.2.3" data-path="../04-ai-dream-team/03-gemini.html">
+            
+                <a href="../04-ai-dream-team/03-gemini.html">
+            
+                    
+                    제미나이 — 빠른 정보 수집가
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.2.4" data-path="../04-ai-dream-team/04-bibimbap-strategy.html">
+            
+                <a href="../04-ai-dream-team/04-bibimbap-strategy.html">
+            
+                    
+                    비빔밥 전략: AI 섞어 쓰기
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part 3: AI 에이전트 시대</li>
+        
+        
+    
+        <li class="chapter " data-level="4.1" data-path="../05-what-is-agent/">
+            
+                <a href="../05-what-is-agent/">
+            
+                    
+                    Ch.5 에이전트란 무엇인가요?
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.1.1" data-path="../05-what-is-agent/01-tool-to-colleague.html">
+            
+                <a href="../05-what-is-agent/01-tool-to-colleague.html">
+            
+                    
+                    도구에서 동료로
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.1.2" data-path="../05-what-is-agent/02-how-agents-work.html">
+            
+                <a href="../05-what-is-agent/02-how-agents-work.html">
+            
+                    
+                    에이전트가 일하는 방식
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.1.3" data-path="../05-what-is-agent/03-agent-examples.html">
+            
+                <a href="../05-what-is-agent/03-agent-examples.html">
+            
+                    
+                    일상 속 에이전트 예시
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.2" data-path="../06-orchestration/">
+            
+                <a href="../06-orchestration/">
+            
+                    
+                    Ch.6 여러 AI가 협업한다
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.2.1" data-path="../06-orchestration/01-ai-teamwork.html">
+            
+                <a href="../06-orchestration/01-ai-teamwork.html">
+            
+                    
+                    오케스트라처럼 협업하는 AI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.2.2" data-path="../06-orchestration/02-genai-to-agentic.html">
+            
+                <a href="../06-orchestration/02-genai-to-agentic.html">
+            
+                    
+                    GenAI에서 Agentic AI까지
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part 4: 직접 해봐요</li>
+        
+        
+    
+        <li class="chapter " data-level="5.1" data-path="../07-how-to-talk/">
+            
+                <a href="../07-how-to-talk/">
+            
+                    
+                    Ch.7 AI에게 말 거는 법
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.1.1" data-path="../07-how-to-talk/01-conversation-not-command.html">
+            
+                <a href="../07-how-to-talk/01-conversation-not-command.html">
+            
+                    
+                    명령하지 말고 대화하세요
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.2" data-path="../07-how-to-talk/02-better-questions.html">
+            
+                <a href="../07-how-to-talk/02-better-questions.html">
+            
+                    
+                    좋은 질문의 비결
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2" data-path="../08-daily-ai/">
+            
+                <a href="../08-daily-ai/">
+            
+                    
+                    Ch.8 일상에서 AI 활용하기
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.2.1" data-path="../08-daily-ai/01-cooking.html">
+            
+                <a href="../08-daily-ai/01-cooking.html">
+            
+                    
+                    요리 도우미
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.2" data-path="../08-daily-ai/02-travel.html">
+            
+                <a href="../08-daily-ai/02-travel.html">
+            
+                    
+                    여행 가이드
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.3" data-path="../08-daily-ai/03-writing.html">
+            
+                <a href="../08-daily-ai/03-writing.html">
+            
+                    
+                    글쓰기 도우미
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.4" data-path="../08-daily-ai/04-daily-habit.html">
+            
+                <a href="../08-daily-ai/04-daily-habit.html">
+            
+                    
+                    매일 5분 AI 습관
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part 5: AI 실전 가이드</li>
+        
+        
+    
+        <li class="chapter " data-level="6.1" data-path="../09-getting-started/">
+            
+                <a href="../09-getting-started/">
+            
+                    
+                    Ch.9 AI 도구 시작하기
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="6.1.1" data-path="../09-getting-started/01-chatgpt.html">
+            
+                <a href="../09-getting-started/01-chatgpt.html">
+            
+                    
+                    ChatGPT 시작하기
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.2" data-path="../09-getting-started/02-claude.html">
+            
+                <a href="../09-getting-started/02-claude.html">
+            
+                    
+                    Claude 시작하기
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.3" data-path="../09-getting-started/03-gemini.html">
+            
+                <a href="../09-getting-started/03-gemini.html">
+            
+                    
+                    Gemini 시작하기
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.4" data-path="../09-getting-started/04-which-device.html">
+            
+                <a href="../09-getting-started/04-which-device.html">
+            
+                    
+                    스마트폰 vs 컴퓨터, 뭘로 할까?
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="6.2" data-path="../10-prompt-practice/">
+            
+                <a href="../10-prompt-practice/">
+            
+                    
+                    Ch.10 프롬프트 실전 연습
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="6.2.1" data-path="../10-prompt-practice/01-self-intro.html">
+            
+                <a href="../10-prompt-practice/01-self-intro.html">
+            
+                    
+                    자기소개부터 시작해요
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.2.2" data-path="../10-prompt-practice/02-five-templates.html">
+            
+                <a href="../10-prompt-practice/02-five-templates.html">
+            
+                    
+                    5가지 실전 프롬프트 템플릿
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.2.3" data-path="../10-prompt-practice/03-keep-talking.html">
+            
+                <a href="../10-prompt-practice/03-keep-talking.html">
+            
+                    
+                    대화를 이어가는 기술
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.2.4" data-path="../10-prompt-practice/04-when-it-fails.html">
+            
+                <a href="../10-prompt-practice/04-when-it-fails.html">
+            
+                    
+                    실패했을 때 대처법
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter active" data-level="6.3" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Ch.11 AI로 만들어보기
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="6.3.1" data-path="01-images.html">
+            
+                <a href="01-images.html">
+            
+                    
+                    AI로 이미지 만들기
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.3.2" data-path="02-writing.html">
+            
+                <a href="02-writing.html">
+            
+                    
+                    AI로 글 다듬기
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.3.3" data-path="03-organize.html">
+            
+                <a href="03-organize.html">
+            
+                    
+                    AI로 표/정리하기
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.3.4" data-path="04-find-your-way.html">
+            
+                <a href="04-find-your-way.html">
+            
+                    
+                    나만의 AI 활용법 찾기
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://github.com/honkit/honkit" target="blank" class="gitbook-link">
+            HonKit에 게시
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >Ch.11 AI로 만들어보기</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="ai로-만들어보기">AI로 만들어보기</h1>
+<p>지금까지 우리는 AI에게 <strong>질문하는 법</strong>을 배웠어요. 궁금한 것을 물어보고, 답을 얻고, 더 좋은 답을 받기 위해 질문을 다듬는 연습도 했죠.</p>
+<p>이제 한 단계 더 나아갈 거예요. AI에게 질문만 하는 게 아니라, <strong>AI와 함께 무언가를 만들어볼</strong> 거예요!</p>
+<h2 id="이-챕터에서-배우는-것">이 챕터에서 배우는 것</h2>
+<p>AI를 활용해서 실생활에 바로 쓸 수 있는 것들을 직접 만들어볼 거예요.</p>
+<ul>
+<li><strong>이미지 만들기</strong> — 그림을 못 그려도 AI가 대신 그려줘요</li>
+<li><strong>글 다듬기</strong> — 공지문, 문자, 편지를 멋지게 완성해요</li>
+<li><strong>표와 목록 정리</strong> — 복잡한 정보를 깔끔하게 정리해요</li>
+<li><strong>나만의 활용법 찾기</strong> — 여러분의 생활에 맞는 AI 사용법을 발견해요</li>
+</ul>
+<h2 id="목차">목차</h2>
+<table>
+<thead>
+<tr>
+<th>순서</th>
+<th>제목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><a href="01-images.html">AI로 이미지 만들기</a></td>
+<td>AI로 그림, 카드, 로고 만드는 법</td>
+</tr>
+<tr>
+<td>2</td>
+<td><a href="02-writing.html">AI로 글 다듬기</a></td>
+<td>공지문, 경조사 문자, 글쓰기 도우미</td>
+</tr>
+<tr>
+<td>3</td>
+<td><a href="03-organize.html">AI로 표/정리하기</a></td>
+<td>회비 정리, 비교표, 체크리스트 만들기</td>
+</tr>
+<tr>
+<td>4</td>
+<td><a href="04-find-your-way.html">나만의 AI 활용법 찾기</a></td>
+<td>내 생활에 맞는 AI 활용법 발견하기</td>
+</tr>
+</tbody>
+</table>
+<h2 id="시작하기-전에">시작하기 전에</h2>
+<p>이 챕터는 <strong>직접 해보는 것</strong>이 가장 중요해요. 읽기만 하지 말고, 하나씩 따라 해보세요. 처음에는 어색하더라도 두세 번 해보면 금방 익숙해져요.</p>
+<p>마치 스마트폰을 처음 쓸 때를 떠올려보세요. 처음엔 전화 거는 것도 어려웠지만, 지금은 카카오톡도 자유자재로 쓰잖아요. AI도 똑같아요!</p>
+<p>자, 그럼 시작해볼까요?</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../10-prompt-practice/04-when-it-fails.html" class="navigation navigation-prev " aria-label="Previous page: 실패했을 때 대처법">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="01-images.html" class="navigation navigation-next " aria-label="Next page: AI로 이미지 만들기">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Ch.11 AI로 만들어보기","level":"6.3","depth":1,"next":{"title":"AI로 이미지 만들기","level":"6.3.1","depth":2,"path":"chapters/11-create-with-ai/01-images.md","ref":"chapters/11-create-with-ai/01-images.md","articles":[]},"previous":{"title":"실패했을 때 대처법","level":"6.2.4","depth":2,"path":"chapters/10-prompt-practice/04-when-it-fails.md","ref":"chapters/10-prompt-practice/04-when-it-fails.md","articles":[]},"articles":[{"title":"AI로 이미지 만들기","level":"6.3.1","depth":2,"path":"chapters/11-create-with-ai/01-images.md","ref":"chapters/11-create-with-ai/01-images.md","articles":[]},{"title":"AI로 글 다듬기","level":"6.3.2","depth":2,"path":"chapters/11-create-with-ai/02-writing.md","ref":"chapters/11-create-with-ai/02-writing.md","articles":[]},{"title":"AI로 표/정리하기","level":"6.3.3","depth":2,"path":"chapters/11-create-with-ai/03-organize.md","ref":"chapters/11-create-with-ai/03-organize.md","articles":[]},{"title":"나만의 AI 활용법 찾기","level":"6.3.4","depth":2,"path":"chapters/11-create-with-ai/04-find-your-way.md","ref":"chapters/11-create-with-ai/04-find-your-way.md","articles":[]}],"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","author":"AI따라오실","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"AI따라오실 — 누구나 시작하는 AI 첫걸음","language":"ko","gitbook":"*","description":"비개발자를 위한 가장 쉬운 AI 가이드북"},"file":{"path":"chapters/11-create-with-ai/README.md","mtime":"2026-03-19T06:13:00.892Z","type":"markdown"},"gitbook":{"version":"6.1.7","time":"2026-03-19T06:17:26.493Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <noscript>
+        <style>
+            .honkit-cloak {
+                display: block !important;
+            }
+        </style>
+    </noscript>
+    <script>
+        // Restore sidebar state as critical path for prevent layout shift
+        function __init__getSidebarState(defaultValue){
+            var baseKey = "";
+            var key = baseKey + ":sidebar";
+            try {
+                var value = localStorage[key];
+                if (value === undefined) {
+                    return defaultValue;
+                }
+                var parsed = JSON.parse(value);
+                return parsed == null ? defaultValue : parsed;
+            } catch (e) {
+                return defaultValue;
+            }
+        }
+        function __init__restoreLastSidebarState() {
+            var isMobile = window.matchMedia("(max-width: 600px)").matches;
+            if (isMobile) {
+                // Init last state if not mobile
+                return;
+            }
+            var sidebarState = __init__getSidebarState(true);
+            var book = document.querySelector(".book");
+            // Show sidebar if it enabled
+            if (sidebarState && book) {
+                book.classList.add("without-animation", "with-summary");
+            }
+        }
+
+        try {
+            __init__restoreLastSidebarState();
+        } finally {
+            var book = document.querySelector(".book");
+            book.classList.remove("honkit-cloak");
+        }
+    </script>
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/@honkit/honkit-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
